@@ -55,23 +55,30 @@ npm start
 
 ## 🌐 Deploy Online
 
-O site está hospedado em:
-- **Netlify**: Deploy automático via GitHub
-- **URL**: Em breve disponível
+### Opção 1: Render.com (Recomendado para Node.js)
+1. Acesse https://render.com
+2. Conecte o repositório GitHub `Rod737/Z3Z-Blog`
+3. Selecione "Web Service"
+4. Configurações:
+   - Build Command: `npm install`
+   - Start Command: `npm start`
+   - Environment: `Node`
+5. Deploy automático e gratuito!
 
-### Deploy no Netlify
+### Opção 2: Railway
+1. Acesse https://railway.app
+2. Conecte GitHub e selecione o repositório
+3. Deploy automático com zero configuração
+
+### Opção 3: Netlify (com Netlify Functions)
 1. Acesse https://netlify.com
 2. Conecte o repositório GitHub `Rod737/Z3Z-Blog`
-3. Configure:
-   - Build command: `npm run build`
-   - Publish directory: `public`
-   - Functions directory: `netlify/functions`
-4. Deploy automático a cada commit
+3. Configurações automáticas via `netlify.toml`
 
-### Deploy Manual Alternativo (Vercel)
-1. Conecte o repositório GitHub ao Vercel
-2. Configure as variáveis de ambiente
-3. Deploy automático a cada commit
+### Opção 4: Heroku
+1. Acesse https://heroku.com
+2. Conecte GitHub e faça deploy
+3. Configuração automática via `Procfile`
 
 ## 🏗️ Estrutura do Projeto
 
