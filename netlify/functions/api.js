@@ -1,6 +1,21 @@
 const serverless = require("serverless-http");
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
+
+// Detectar o diretório base correto
+const findProjectRoot = () => {
+    let currentDir = __dirname;
+    while (currentDir !== path.dirname(currentDir)) {
+        if (fs.existsSync(path.join(currentDir, 'package.json'))) {
+            return currentDir;
+        }
+        currentDir = path.dirname(currentDir);
+    }
+    return path.join(__dirname, '../..');
+};
+
+const projectRoot = findProjectRoot();
 const expressLayouts = require('express-ejs-layouts');
 const session = require('express-session');
 const bodyParser = require('body-parser');
@@ -31,25 +46,25 @@ app.use(session({
     cookie: { secure: false, maxAge: 24 * 60 * 60 * 1000 } // 24 horas
 }));
 
-// Configuração do EJS
+// Configuração do EJS - ajustado para Netlify
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, '../../views'));
+app.set('views', path.join(projectRoot, 'views'));
 app.use(expressLayouts);
 app.set('layout', 'layout');
 
-// Arquivos estáticos
-app.use(express.static(path.join(__dirname, '../../public')));
-app.use('/images', express.static(path.join(__dirname, '../../public/images')));
-app.use('/css', express.static(path.join(__dirname, '../../public/css')));
-app.use('/js', express.static(path.join(__dirname, '../../public/js')));
+// Arquivos estáticos - ajustado para Netlify
+app.use(express.static(path.join(projectRoot, 'public')));
+app.use('/images', express.static(path.join(projectRoot, 'public/images')));
+app.use('/css', express.static(path.join(projectRoot, 'public/css')));
+app.use('/js', express.static(path.join(projectRoot, 'public/js')));
 
-// Importar rotas
-const indexRoutes = require('../../routes/index');
-const poemasRoutes = require('../../routes/poemas');
-const filosofiaRoutes = require('../../routes/filosofia');
-const religiaoRoutes = require('../../routes/religiao');
-const adminRoutes = require('../../routes/admin');
-const commentsRoutes = require('../../routes/comments');
+// Importar rotas - ajustado para Netlify
+const indexRoutes = require(path.join(projectRoot, 'routes/index'));
+const poemasRoutes = require(path.join(projectRoot, 'routes/poemas'));
+const filosofiaRoutes = require(path.join(projectRoot, 'routes/filosofia'));
+const religiaoRoutes = require(path.join(projectRoot, 'routes/religiao'));
+const adminRoutes = require(path.join(projectRoot, 'routes/admin'));
+const commentsRoutes = require(path.join(projectRoot, 'routes/comments'));
 
 // Usar rotas
 app.use('/', indexRoutes);
