@@ -251,6 +251,7 @@ const getAdminHTML = (title, content, currentPage = '') => {
         --admin-light: #FEFEFE;
         --admin-gray-100: #F5F5F5;
         --admin-gray-800: #424242;
+        --admin-gradient-secondary: linear-gradient(135deg, #B71C1C 0%, #D32F2F 100%);
         --font-primary: 'Oswald', sans-serif;
         --font-secondary: 'Roboto Slab', serif;
     }
@@ -1640,10 +1641,10 @@ app.get('/admin/poemas/novo', isAuthenticated, (req, res) => {
                         <i data-lucide="image" style="width: 16px; height: 16px; margin-right: 8px;"></i>
                         Imagem do Poema (Opcional)
                     </label>
-                    <input type="file" id="image" name="image" class="admin-form-input" 
-                           accept="image/*" style="padding: 10px;">
+                    <input type="url" id="image" name="image" class="admin-form-input" 
+                           placeholder="https://exemplo.com/imagem.jpg" style="padding: 15px;">
                     <small style="color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-top: 8px; display: block;">
-                        ✨ Upload via Cloudinary. Formatos: JPG, PNG, GIF. Máximo: 5MB
+                        🔗 Cole a URL da imagem. Formatos suportados: JPG, PNG, GIF, WEBP
                     </small>
                 </div>
                 
@@ -1707,10 +1708,10 @@ app.get('/admin/filosofia/novo', isAuthenticated, (req, res) => {
                         <i data-lucide="image" style="width: 16px; height: 16px; margin-right: 8px;"></i>
                         Imagem do Artigo (Opcional)
                     </label>
-                    <input type="file" id="image" name="image" class="admin-form-input" 
-                           accept="image/*" style="padding: 10px;">
+                    <input type="url" id="image" name="image" class="admin-form-input" 
+                           placeholder="https://exemplo.com/imagem.jpg" style="padding: 15px;">
                     <small style="color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-top: 8px; display: block;">
-                        ✨ Upload via Cloudinary. Formatos: JPG, PNG, GIF. Máximo: 5MB
+                        🔗 Cole a URL da imagem. Formatos suportados: JPG, PNG, GIF, WEBP
                     </small>
                 </div>
                 
@@ -1786,10 +1787,10 @@ app.get('/admin/religiao/novo', isAuthenticated, (req, res) => {
                         <i data-lucide="image" style="width: 16px; height: 16px; margin-right: 8px;"></i>
                         Imagem do Artigo (Opcional)
                     </label>
-                    <input type="file" id="image" name="image" class="admin-form-input" 
-                           accept="image/*" style="padding: 10px;">
+                    <input type="url" id="image" name="image" class="admin-form-input" 
+                           placeholder="https://exemplo.com/imagem.jpg" style="padding: 15px;">
                     <small style="color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-top: 8px; display: block;">
-                        ✨ Upload via Cloudinary. Formatos: JPG, PNG, GIF. Máximo: 5MB
+                        🔗 Cole a URL da imagem. Formatos suportados: JPG, PNG, GIF, WEBP
                     </small>
                 </div>
                 
@@ -1835,9 +1836,9 @@ app.get('/admin/religiao/novo', isAuthenticated, (req, res) => {
 });
 
 // Rotas POST para salvar novos artigos (com upload de imagens no Cloudinary)
-app.post('/admin/poemas/novo', isAuthenticated, upload.single('image'), async (req, res) => {
+app.post('/admin/poemas/novo', isAuthenticated, async (req, res) => {
   try {
-    const { title, content, date } = req.body;
+    const { title, content, date, image } = req.body;
     
     // Criar novo ID
     const newId = Math.max(...sampleData.poemas.map(p => p.id)) + 1;
@@ -1845,14 +1846,16 @@ app.post('/admin/poemas/novo', isAuthenticated, upload.single('image'), async (r
     // Processar conteúdo (quebrar em linhas)
     const contentLines = content.split('\n').filter(line => line.trim() !== '');
     
-    // Processar imagem se foi enviada
+    // Processar URL da imagem
     let imagePath = null;
-    if (req.file) {
+    if (image && image.trim() !== '') {
+      // Validar se é uma URL válida
       try {
-        imagePath = await uploadToCloudinary(req.file.buffer, req.file.originalname);
-      } catch (uploadError) {
-        console.error('Erro no upload:', uploadError);
-        // Continuar sem imagem se o upload falhar
+        new URL(image.trim());
+        imagePath = image.trim();
+      } catch (urlError) {
+        console.error('URL de imagem inválida:', urlError);
+        // Continuar sem imagem se a URL for inválida
       }
     }
     
@@ -1880,9 +1883,9 @@ app.post('/admin/poemas/novo', isAuthenticated, upload.single('image'), async (r
   }
 });
 
-app.post('/admin/filosofia/novo', isAuthenticated, upload.single('image'), async (req, res) => {
+app.post('/admin/filosofia/novo', isAuthenticated, async (req, res) => {
   try {
-    const { title, content, category, date } = req.body;
+    const { title, content, category, date, image } = req.body;
     
     // Criar novo ID
     const newId = Math.max(...sampleData.filosofia.map(a => a.id)) + 1;
@@ -1890,14 +1893,16 @@ app.post('/admin/filosofia/novo', isAuthenticated, upload.single('image'), async
     // Processar conteúdo (quebrar em parágrafos)
     const contentParagraphs = content.split('\n').filter(line => line.trim() !== '');
     
-    // Processar imagem se foi enviada
+    // Processar URL da imagem
     let imagePath = null;
-    if (req.file) {
+    if (image && image.trim() !== '') {
+      // Validar se é uma URL válida
       try {
-        imagePath = await uploadToCloudinary(req.file.buffer, req.file.originalname);
-      } catch (uploadError) {
-        console.error('Erro no upload:', uploadError);
-        // Continuar sem imagem se o upload falhar
+        new URL(image.trim());
+        imagePath = image.trim();
+      } catch (urlError) {
+        console.error('URL de imagem inválida:', urlError);
+        // Continuar sem imagem se a URL for inválida
       }
     }
     
@@ -1925,9 +1930,9 @@ app.post('/admin/filosofia/novo', isAuthenticated, upload.single('image'), async
   }
 });
 
-app.post('/admin/religiao/novo', isAuthenticated, upload.single('image'), async (req, res) => {
+app.post('/admin/religiao/novo', isAuthenticated, async (req, res) => {
   try {
-    const { title, content, category, date } = req.body;
+    const { title, content, category, date, image } = req.body;
     
     // Criar novo ID
     const newId = Math.max(...sampleData.religiao.map(a => a.id)) + 1;
@@ -1935,14 +1940,16 @@ app.post('/admin/religiao/novo', isAuthenticated, upload.single('image'), async 
     // Processar conteúdo (quebrar em parágrafos)
     const contentParagraphs = content.split('\n').filter(line => line.trim() !== '');
     
-    // Processar imagem se foi enviada
+    // Processar URL da imagem
     let imagePath = null;
-    if (req.file) {
+    if (image && image.trim() !== '') {
+      // Validar se é uma URL válida
       try {
-        imagePath = await uploadToCloudinary(req.file.buffer, req.file.originalname);
-      } catch (uploadError) {
-        console.error('Erro no upload:', uploadError);
-        // Continuar sem imagem se o upload falhar
+        new URL(image.trim());
+        imagePath = image.trim();
+      } catch (urlError) {
+        console.error('URL de imagem inválida:', urlError);
+        // Continuar sem imagem se a URL for inválida
       }
     }
     
