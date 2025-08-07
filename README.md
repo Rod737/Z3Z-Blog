@@ -40,8 +40,8 @@ Inspirada no logo Z3Z com coroa de louros:
 
 ```bash
 # Clonar o repositório
-git clone [url-do-repo]
-cd Blog-Z3Z
+git clone https://github.com/Rod737/Z3Z-Blog.git
+cd Z3Z-Blog
 
 # Instalar dependências
 npm install
@@ -52,6 +52,17 @@ npm run dev
 # Executar em produção
 npm start
 ```
+
+## 🌐 Deploy Online
+
+O site está hospedado em:
+- **Vercel**: Deploy automático via GitHub
+- **URL**: Em breve disponível
+
+### Deploy Manual
+1. Conecte o repositório GitHub ao Vercel
+2. Configure as variáveis de ambiente
+3. Deploy automático a cada commit
 
 ## 🏗️ Estrutura do Projeto
 
