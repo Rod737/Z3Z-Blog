@@ -3,53 +3,12 @@ const express = require('express');
 const path = require('path');
 const bcrypt = require('bcryptjs');
 const session = require('express-session');
-const multer = require('multer');
-const cloudinary = require('cloudinary').v2;
+// const multer = require('multer');
+// const cloudinary = require('cloudinary').v2;
 
 const app = express();
 
-// Configuração do Cloudinary (usando conta demo - substitua pelas suas credenciais)
-cloudinary.config({
-  cloud_name: 'demo',
-  api_key: '123456789012345', 
-  api_secret: 'abcdefghijklmnopqrstuvwxyz12',
-  secure: true
-});
-
-// Configuração do multer para usar memória (compatível com serverless)
-const upload = multer({ 
-  storage: multer.memoryStorage(),
-  limits: {
-    fileSize: 5 * 1024 * 1024 // 5MB
-  },
-  fileFilter: function (req, file, cb) {
-    if (file.mimetype.startsWith('image/')) {
-      cb(null, true);
-    } else {
-      cb(new Error('Apenas imagens são permitidas!'));
-    }
-  }
-});
-
-// Função para upload no Cloudinary
-async function uploadToCloudinary(buffer, filename) {
-  return new Promise((resolve, reject) => {
-    cloudinary.uploader.upload_stream(
-      {
-        resource_type: 'auto',
-        folder: 'z3z-blog',
-        public_id: `article-${Date.now()}`
-      },
-      (error, result) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(result.secure_url);
-        }
-      }
-    ).end(buffer);
-  });
-}
+// Configurações de upload removidas - agora usando URL direta
 
 // Middlewares básicos
 app.use(express.json());
@@ -1629,7 +1588,7 @@ app.get('/admin/poemas/novo', isAuthenticated, (req, res) => {
         </div>
         
         <div class="admin-card-body">
-            <form method="POST" action="/admin/poemas/novo" enctype="multipart/form-data" class="admin-form">
+            <form method="POST" action="/admin/poemas/novo" class="admin-form">
                 <div class="admin-form-group">
                     <label for="title" class="admin-form-label">Título do Poema</label>
                     <input type="text" id="title" name="title" class="admin-form-input" 
@@ -1696,7 +1655,7 @@ app.get('/admin/filosofia/novo', isAuthenticated, (req, res) => {
         </div>
         
         <div class="admin-card-body">
-            <form method="POST" action="/admin/filosofia/novo" enctype="multipart/form-data" class="admin-form">
+            <form method="POST" action="/admin/filosofia/novo" class="admin-form">
                 <div class="admin-form-group">
                     <label for="title" class="admin-form-label">Título do Artigo</label>
                     <input type="text" id="title" name="title" class="admin-form-input" 
@@ -1775,7 +1734,7 @@ app.get('/admin/religiao/novo', isAuthenticated, (req, res) => {
         </div>
         
         <div class="admin-card-body">
-            <form method="POST" action="/admin/religiao/novo" enctype="multipart/form-data" class="admin-form">
+            <form method="POST" action="/admin/religiao/novo" class="admin-form">
                 <div class="admin-form-group">
                     <label for="title" class="admin-form-label">Título do Artigo</label>
                     <input type="text" id="title" name="title" class="admin-form-input" 
