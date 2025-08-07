@@ -10,15 +10,10 @@
   command = "npm run dev"
   port = 3000
 
-# Redirects for SPA
-[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/api/:splat"
-  status = 200
-
+# Redirects for Node.js app
 [[redirects]]
   from = "/*"
-  to = "/index.html"
+  to = "/.netlify/functions/api/:splat"
   status = 200
 
 # Headers for security
