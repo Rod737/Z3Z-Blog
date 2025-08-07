@@ -38,6 +38,29 @@ const getBaseHTML = (title, content, currentPage = '') => {
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Oswald:wght@400;600;700&family=Roboto+Slab:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <style>
+        /* Suporte para textos longos e quebra de palavras */
+        .post-content, .poem-content, .article-content {
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            hyphens: auto;
+            line-height: 1.8;
+            white-space: pre-wrap;
+        }
+        
+        .post-content p, .poem-content p, .article-content p {
+            margin-bottom: 1.2em;
+            max-width: 100%;
+            overflow-wrap: break-word;
+        }
+        
+        .post-content pre, .poem-content pre, .article-content pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            font-family: inherit;
+        }
+    </style>
 </head>
 <body>
     <header class="header">
@@ -512,9 +535,15 @@ const getAdminHTML = (title, content, currentPage = '') => {
         transform: translateY(-1px);
     }
     .admin-form-textarea {
-        min-height: 120px;
+        min-height: 300px;
+        max-height: 600px;
         resize: vertical;
-        line-height: 1.6;
+        line-height: 1.8;
+        font-family: 'Roboto Slab', serif;
+        font-size: 1.1rem;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        white-space: pre-wrap;
     }
     .admin-btn-secondary {
         background: rgba(108, 117, 125, 0.1);
@@ -1623,7 +1652,7 @@ app.get('/admin/poemas/novo', isAuthenticated, (req, res) => {
                     <label for="content" class="admin-form-label">Conteúdo</label>
                     <textarea id="content" name="content" class="admin-form-textarea" 
                               placeholder="Digite o poema (uma estrofe por linha, linha vazia para separar estrofes)" 
-                              rows="12" required></textarea>
+                              rows="20" required></textarea>
                     <small style="color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-top: 8px; display: block;">
                         Dica: Use quebras de linha para separar versos e linhas vazias para separar estrofes
                     </small>
@@ -1702,7 +1731,7 @@ app.get('/admin/filosofia/novo', isAuthenticated, (req, res) => {
                     <label for="content" class="admin-form-label">Conteúdo</label>
                     <textarea id="content" name="content" class="admin-form-textarea" 
                               placeholder="Digite o conteúdo do artigo (um parágrafo por linha)" 
-                              rows="15" required></textarea>
+                              rows="25" required></textarea>
                     <small style="color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-top: 8px; display: block;">
                         Cada linha será um parágrafo separado
                     </small>
@@ -1781,7 +1810,7 @@ app.get('/admin/religiao/novo', isAuthenticated, (req, res) => {
                     <label for="content" class="admin-form-label">Conteúdo</label>
                     <textarea id="content" name="content" class="admin-form-textarea" 
                               placeholder="Digite o conteúdo do artigo (um parágrafo por linha)" 
-                              rows="15" required></textarea>
+                              rows="25" required></textarea>
                     <small style="color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-top: 8px; display: block;">
                         Cada linha será um parágrafo separado
                     </small>
@@ -1814,8 +1843,8 @@ app.post('/admin/poemas/novo', isAuthenticated, async (req, res) => {
     // Criar novo ID
     const newId = Math.max(...sampleData.poemas.map(p => p.id)) + 1;
     
-    // Processar conteúdo (quebrar em linhas)
-    const contentLines = content.split('\n').filter(line => line.trim() !== '');
+    // Processar conteúdo (preservar estrutura do poema incluindo linhas longas)
+    const contentLines = content.split('\n').map(line => line.trim());
     
     // Processar URL da imagem
     let imagePath = null;
@@ -1861,8 +1890,8 @@ app.post('/admin/filosofia/novo', isAuthenticated, async (req, res) => {
     // Criar novo ID
     const newId = Math.max(...sampleData.filosofia.map(a => a.id)) + 1;
     
-    // Processar conteúdo (quebrar em parágrafos)
-    const contentParagraphs = content.split('\n').filter(line => line.trim() !== '');
+    // Processar conteúdo (preservar parágrafos e quebras de linha)
+    const contentParagraphs = content.split('\n\n').map(para => para.trim()).filter(para => para !== '');
     
     // Processar URL da imagem
     let imagePath = null;
@@ -1908,8 +1937,8 @@ app.post('/admin/religiao/novo', isAuthenticated, async (req, res) => {
     // Criar novo ID
     const newId = Math.max(...sampleData.religiao.map(a => a.id)) + 1;
     
-    // Processar conteúdo (quebrar em parágrafos)
-    const contentParagraphs = content.split('\n').filter(line => line.trim() !== '');
+    // Processar conteúdo (preservar parágrafos e quebras de linha)
+    const contentParagraphs = content.split('\n\n').map(para => para.trim()).filter(para => para !== '');
     
     // Processar URL da imagem
     let imagePath = null;
@@ -1998,7 +2027,7 @@ app.get('/admin/poemas/editar/:id', isAuthenticated, (req, res) => {
                     <label for="content" class="admin-form-label">Conteúdo</label>
                     <textarea id="content" name="content" class="admin-form-textarea" 
                               placeholder="Digite o poema (uma estrofe por linha, linha vazia para separar estrofes)" 
-                              rows="12" required>${poema.content.join('\\n')}</textarea>
+                              rows="25" required>${poema.content.join('\\n')}</textarea>
                     <small style="color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-top: 8px; display: block;">
                         Dica: Use quebras de linha para separar versos e linhas vazias para separar estrofes
                     </small>
@@ -2082,7 +2111,7 @@ app.get('/admin/filosofia/editar/:id', isAuthenticated, (req, res) => {
                     <label for="content" class="admin-form-label">Conteúdo</label>
                     <textarea id="content" name="content" class="admin-form-textarea" 
                               placeholder="Digite o conteúdo do artigo (um parágrafo por linha)" 
-                              rows="15" required>${artigo.content.join('\\n\\n')}</textarea>
+                              rows="30" required>${artigo.content.join('\\n\\n')}</textarea>
                     <small style="color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-top: 8px; display: block;">
                         Dica: Use quebras de linha duplas para separar parágrafos
                     </small>
@@ -2166,7 +2195,7 @@ app.get('/admin/religiao/editar/:id', isAuthenticated, (req, res) => {
                     <label for="content" class="admin-form-label">Conteúdo</label>
                     <textarea id="content" name="content" class="admin-form-textarea" 
                               placeholder="Digite o conteúdo do artigo (um parágrafo por linha)" 
-                              rows="15" required>${artigo.content.join('\\n\\n')}</textarea>
+                              rows="30" required>${artigo.content.join('\\n\\n')}</textarea>
                     <small style="color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-top: 8px; display: block;">
                         Dica: Use quebras de linha duplas para separar parágrafos
                     </small>
@@ -2255,8 +2284,8 @@ app.post('/admin/poemas/editar/:id', isAuthenticated, async (req, res) => {
       return res.status(404).send('Poema não encontrado');
     }
     
-    // Processar conteúdo (quebrar em linhas)
-    const contentLines = content.split('\n').filter(line => line.trim() !== '');
+    // Processar conteúdo (preservar estrutura do poema incluindo linhas longas)
+    const contentLines = content.split('\n').map(line => line.trim());
     
     // Processar URL da imagem
     let imagePath = null;
