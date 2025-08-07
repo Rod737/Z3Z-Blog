@@ -616,6 +616,82 @@ const getAdminHTML = (title, content, currentPage = '') => {
     <script>
         // Inicializar ícones Lucide
         lucide.createIcons();
+        
+        // Funções de exclusão com confirmação
+        async function excluirPoema(id, title) {
+            if (confirm(\`Tem certeza que deseja excluir o poema "\${title}"?\n\nEsta ação não pode ser desfeita.\`)) {
+                try {
+                    const response = await fetch(\`/admin/poemas/\${id}\`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        alert('Poema excluído com sucesso!');
+                        location.reload();
+                    } else {
+                        alert('Erro ao excluir poema: ' + (result.message || 'Erro desconhecido'));
+                    }
+                } catch (error) {
+                    console.error('Erro ao excluir poema:', error);
+                    alert('Erro de conexão. Tente novamente.');
+                }
+            }
+        }
+        
+        async function excluirFilosofia(id, title) {
+            if (confirm(\`Tem certeza que deseja excluir o artigo "\${title}"?\n\nEsta ação não pode ser desfeita.\`)) {
+                try {
+                    const response = await fetch(\`/admin/filosofia/\${id}\`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        alert('Artigo excluído com sucesso!');
+                        location.reload();
+                    } else {
+                        alert('Erro ao excluir artigo: ' + (result.message || 'Erro desconhecido'));
+                    }
+                } catch (error) {
+                    console.error('Erro ao excluir artigo:', error);
+                    alert('Erro de conexão. Tente novamente.');
+                }
+            }
+        }
+        
+        async function excluirReligiao(id, title) {
+            if (confirm(\`Tem certeza que deseja excluir o artigo "\${title}"?\n\nEsta ação não pode ser desfeita.\`)) {
+                try {
+                    const response = await fetch(\`/admin/religiao/\${id}\`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        alert('Artigo excluído com sucesso!');
+                        location.reload();
+                    } else {
+                        alert('Erro ao excluir artigo: ' + (result.message || 'Erro desconhecido'));
+                    }
+                } catch (error) {
+                    console.error('Erro ao excluir artigo:', error);
+                    alert('Erro de conexão. Tente novamente.');
+                }
+            }
+        }
     </script>
 </body>
 </html>`;
@@ -1416,10 +1492,14 @@ app.get('/admin/poemas', isAuthenticated, (req, res) => {
                         <td>${poema.date}</td>
                         <td><span class="admin-status ${poema.published ? 'published' : 'draft'}">${poema.published ? 'Publicado' : 'Rascunho'}</span></td>
                         <td>
-                            <a href="/poemas/${poema.id}" class="admin-btn admin-btn-small" target="_blank">
+                            <a href="/poemas/${poema.id}" class="admin-btn admin-btn-small" target="_blank" style="margin-right: 8px;">
                                 <i data-lucide="eye" style="width: 14px; height: 14px;"></i>
                                 Ver
                             </a>
+                            <button onclick="excluirPoema(${poema.id}, '${poema.title}')" class="admin-btn admin-btn-small" style="background: var(--admin-gradient-secondary); color: white; border: none;">
+                                <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i>
+                                Excluir
+                            </button>
                         </td>
                     </tr>
                 `).join('')}
@@ -1460,10 +1540,14 @@ app.get('/admin/filosofia', isAuthenticated, (req, res) => {
                         <td>${artigo.date}</td>
                         <td><span class="admin-status ${artigo.published ? 'published' : 'draft'}">${artigo.published ? 'Publicado' : 'Rascunho'}</span></td>
                         <td>
-                            <a href="/filosofia/${artigo.id}" class="admin-btn admin-btn-small" target="_blank">
+                            <a href="/filosofia/${artigo.id}" class="admin-btn admin-btn-small" target="_blank" style="margin-right: 8px;">
                                 <i data-lucide="eye" style="width: 14px; height: 14px;"></i>
                                 Ver
                             </a>
+                            <button onclick="excluirFilosofia(${artigo.id}, '${artigo.title}')" class="admin-btn admin-btn-small" style="background: var(--admin-gradient-secondary); color: white; border: none;">
+                                <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i>
+                                Excluir
+                            </button>
                         </td>
                     </tr>
                 `).join('')}
@@ -1504,10 +1588,14 @@ app.get('/admin/religiao', isAuthenticated, (req, res) => {
                         <td>${artigo.date}</td>
                         <td><span class="admin-status ${artigo.published ? 'published' : 'draft'}">${artigo.published ? 'Publicado' : 'Rascunho'}</span></td>
                         <td>
-                            <a href="/religiao/${artigo.id}" class="admin-btn admin-btn-small" target="_blank">
+                            <a href="/religiao/${artigo.id}" class="admin-btn admin-btn-small" target="_blank" style="margin-right: 8px;">
                                 <i data-lucide="eye" style="width: 14px; height: 14px;"></i>
                                 Ver
                             </a>
+                            <button onclick="excluirReligiao(${artigo.id}, '${artigo.title}')" class="admin-btn admin-btn-small" style="background: var(--admin-gradient-secondary); color: white; border: none;">
+                                <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i>
+                                Excluir
+                            </button>
                         </td>
                     </tr>
                 `).join('')}
@@ -1879,6 +1967,58 @@ app.post('/admin/religiao/novo', isAuthenticated, upload.single('image'), async 
   } catch (error) {
     console.error('Erro ao criar artigo de religião:', error);
     res.status(500).send('Erro interno do servidor');
+  }
+});
+
+// Rotas DELETE para excluir artigos
+app.delete('/admin/poemas/:id', isAuthenticated, (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const index = sampleData.poemas.findIndex(p => p.id === id);
+    
+    if (index === -1) {
+      return res.status(404).json({ success: false, message: 'Poema não encontrado' });
+    }
+    
+    sampleData.poemas.splice(index, 1);
+    res.json({ success: true, message: 'Poema excluído com sucesso' });
+  } catch (error) {
+    console.error('Erro ao excluir poema:', error);
+    res.status(500).json({ success: false, message: 'Erro interno do servidor' });
+  }
+});
+
+app.delete('/admin/filosofia/:id', isAuthenticated, (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const index = sampleData.filosofia.findIndex(f => f.id === id);
+    
+    if (index === -1) {
+      return res.status(404).json({ success: false, message: 'Artigo não encontrado' });
+    }
+    
+    sampleData.filosofia.splice(index, 1);
+    res.json({ success: true, message: 'Artigo excluído com sucesso' });
+  } catch (error) {
+    console.error('Erro ao excluir artigo:', error);
+    res.status(500).json({ success: false, message: 'Erro interno do servidor' });
+  }
+});
+
+app.delete('/admin/religiao/:id', isAuthenticated, (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const index = sampleData.religiao.findIndex(r => r.id === id);
+    
+    if (index === -1) {
+      return res.status(404).json({ success: false, message: 'Artigo não encontrado' });
+    }
+    
+    sampleData.religiao.splice(index, 1);
+    res.json({ success: true, message: 'Artigo excluído com sucesso' });
+  } catch (error) {
+    console.error('Erro ao excluir artigo:', error);
+    res.status(500).json({ success: false, message: 'Erro interno do servidor' });
   }
 });
 
