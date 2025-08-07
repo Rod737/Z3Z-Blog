@@ -42,8 +42,17 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(expressLayouts);
 app.set('layout', 'layout');
 
-// Arquivos estáticos
-app.use(express.static(path.join(__dirname, 'public')));
+// Arquivos estáticos com configuração melhorada
+app.use(express.static(path.join(__dirname, 'public'), {
+    setHeaders: (res, path) => {
+        if (path.endsWith('.css')) {
+            res.setHeader('Content-Type', 'text/css');
+        }
+        if (path.endsWith('.js')) {
+            res.setHeader('Content-Type', 'application/javascript');
+        }
+    }
+}));
 
 // Importar rotas
 const indexRoutes = require('./routes/index');
@@ -52,6 +61,14 @@ const filosofiaRoutes = require('./routes/filosofia');
 const religiaoRoutes = require('./routes/religiao');
 const adminRoutes = require('./routes/admin');
 const commentsRoutes = require('./routes/comments');
+
+// Rota específica para arquivos CSS (debug)
+app.get('/css/:file', (req, res) => {
+    const file = req.params.file;
+    const filePath = path.join(__dirname, 'public', 'css', file);
+    res.setHeader('Content-Type', 'text/css');
+    res.sendFile(filePath);
+});
 
 // Usar rotas
 app.use('/', indexRoutes);
