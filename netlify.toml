@@ -26,17 +26,12 @@
   to = "/images/:splat"
   status = 200
 
-# Servir favicon
-[[redirects]]
-  from = "/favicon.ico"
-  to = "/favicon.ico"
-  status = 200
-
-# Redirect remaining routes to Netlify function
+# Redirect remaining routes to Netlify function (except favicon)
 [[redirects]]
   from = "/*"
   to = "/.netlify/functions/simple/:splat"
   status = 200
+  force = false
 
 # Headers for security
 [[headers]]
