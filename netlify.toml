@@ -13,7 +13,7 @@
 # Redirect all routes to Netlify function
 [[redirects]]
   from = "/*"
-  to = "/.netlify/functions/api/:splat"
+  to = "/.netlify/functions/server/:splat"
   status = 200
   force = true
 
