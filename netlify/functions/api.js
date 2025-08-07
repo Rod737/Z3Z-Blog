@@ -1,21 +1,27 @@
-const serverless = require("serverless-http");
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
 
-// Detectar o diretório base correto
+// Detectar o diretório base correto para Netlify
 const findProjectRoot = () => {
-    let currentDir = __dirname;
-    while (currentDir !== path.dirname(currentDir)) {
-        if (fs.existsSync(path.join(currentDir, 'package.json'))) {
-            return currentDir;
+    // No Netlify, primeiro tentamos paths absolutos
+    const possibleRoots = [
+        '/opt/build/repo',
+        path.resolve(__dirname, '../..'),
+        process.cwd()
+    ];
+    
+    for (const root of possibleRoots) {
+        if (fs.existsSync(path.join(root, 'package.json'))) {
+            return root;
         }
-        currentDir = path.dirname(currentDir);
     }
-    return path.join(__dirname, '../..');
+    
+    return path.resolve(__dirname, '../..');
 };
 
 const projectRoot = findProjectRoot();
+console.log('Project root:', projectRoot);
 const expressLayouts = require('express-ejs-layouts');
 const session = require('express-session');
 const bodyParser = require('body-parser');
@@ -92,5 +98,6 @@ app.use((err, req, res, next) => {
     });
 });
 
-// Exportar como função serverless
+// Exportar como função serverless para Netlify
+const serverless = require("serverless-http");
 module.exports.handler = serverless(app);
