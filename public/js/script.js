@@ -1,71 +1,29 @@
-// Navegação e controle de seções
+// Navegação e controle de elementos
 document.addEventListener('DOMContentLoaded', function() {
     
     // Elementos DOM
-    const navLinks = document.querySelectorAll('.nav-link');
-    const sections = document.querySelectorAll('.section');
     const hamburger = document.querySelector('.hamburger');
     const navMenu = document.querySelector('.nav-menu');
     const filterBtns = document.querySelectorAll('.filter-btn');
     const poemCards = document.querySelectorAll('.poem-card');
 
-    // Navegação entre seções
-    function showSection(targetId) {
-        // Esconder todas as seções
-        sections.forEach(section => {
-            section.classList.remove('active');
+    // Menu hamburger para mobile
+    if (hamburger && navMenu) {
+        hamburger.addEventListener('click', function() {
+            hamburger.classList.toggle('active');
+            navMenu.classList.toggle('active');
         });
-        
-        // Mostrar seção alvo
-        const targetSection = document.getElementById(targetId);
-        if (targetSection) {
-            targetSection.classList.add('active');
-        }
-        
-        // Atualizar links ativos
-        navLinks.forEach(link => {
-            link.classList.remove('active');
-        });
-        
-        // Adicionar classe active ao link correto
-        const activeLink = document.querySelector(`[data-section="${targetId}"]`);
-        if (activeLink) {
-            activeLink.classList.add('active');
-        }
     }
 
-    // Event listeners para navegação
-    navLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            const targetSection = this.getAttribute('data-section');
-            showSection(targetSection);
-            
-            // Fechar menu mobile se estiver aberto
-            navMenu.classList.remove('active');
-            hamburger.classList.remove('active');
-            
-            // Scroll para o topo
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        });
-    });
-
-    // Menu hamburger para mobile
-    hamburger.addEventListener('click', function() {
-        hamburger.classList.toggle('active');
-        navMenu.classList.toggle('active');
-    });
-
     // Fechar menu ao clicar fora
-    document.addEventListener('click', function(e) {
-        if (!navMenu.contains(e.target) && !hamburger.contains(e.target)) {
-            navMenu.classList.remove('active');
-            hamburger.classList.remove('active');
-        }
-    });
+    if (hamburger && navMenu) {
+        document.addEventListener('click', function(e) {
+            if (!navMenu.contains(e.target) && !hamburger.contains(e.target)) {
+                navMenu.classList.remove('active');
+                hamburger.classList.remove('active');
+            }
+        });
+    }
 
     // Sistema de filtros para poemas
     function filterPoems(category) {
@@ -101,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Smooth scrolling para navegação interna
+    // Smooth scrolling para âncoras
     function smoothScroll() {
         const links = document.querySelectorAll('a[href^="#"]');
         
@@ -110,12 +68,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 const targetId = this.getAttribute('href').substring(1);
                 const targetElement = document.getElementById(targetId);
                 
-                if (targetElement && targetElement.classList.contains('section')) {
+                if (targetElement) {
                     e.preventDefault();
-                    showSection(targetId);
-                    
-                    window.scrollTo({
-                        top: 0,
+                    targetElement.scrollIntoView({
                         behavior: 'smooth'
                     });
                 }
@@ -164,39 +119,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Sistema de navegação por teclado
+    // Sistema de navegação por teclado (desabilitado para navegação por páginas)
     function keyboardNavigation() {
-        let currentSectionIndex = 0;
-        const sectionIds = ['home', 'poemas', 'filosofia', 'religiao', 'sobre'];
-        
-        document.addEventListener('keydown', function(e) {
-            // Só funciona se não estiver digitando em um input
-            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
-                return;
-            }
-            
-            switch(e.key) {
-                case 'ArrowRight':
-                case 'ArrowDown':
-                    e.preventDefault();
-                    currentSectionIndex = (currentSectionIndex + 1) % sectionIds.length;
-                    showSection(sectionIds[currentSectionIndex]);
-                    break;
-                    
-                case 'ArrowLeft':
-                case 'ArrowUp':
-                    e.preventDefault();
-                    currentSectionIndex = currentSectionIndex === 0 ? sectionIds.length - 1 : currentSectionIndex - 1;
-                    showSection(sectionIds[currentSectionIndex]);
-                    break;
-                    
-                case 'Home':
-                    e.preventDefault();
-                    currentSectionIndex = 0;
-                    showSection('home');
-                    break;
-            }
-        });
+        // Função desabilitada para permitir navegação normal entre páginas
+        console.log('Navegação por teclado desabilitada para navegação por páginas');
     }
 
     // Busca em tempo real (para implementação futura)
