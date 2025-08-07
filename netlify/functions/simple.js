@@ -21,13 +21,32 @@ function formatarTexto(texto, tipo = 'paragrafo') {
       .filter(linha => linha !== '' || texto.includes('\n\n')); // Preserva linhas vazias se houver quebras duplas
   } else {
     // Para artigos: cria parágrafos bem estruturados
-    const paragrafos = texto.split('\n\n')
-      .map(p => p.trim())
-      .filter(p => p !== '')
-      .map(p => {
-        // Remove quebras de linha extras dentro do parágrafo
-        return p.replace(/\n+/g, ' ').trim();
-      });
+    let paragrafos;
+    
+    // Se tem quebras duplas, usa como separador de parágrafos
+    if (texto.includes('\n\n')) {
+      paragrafos = texto.split('\n\n')
+        .map(p => p.trim())
+        .filter(p => p !== '')
+        .map(p => {
+          // Remove quebras de linha extras dentro do parágrafo, mas mantém estrutura
+          return p.replace(/\n+/g, ' ').trim();
+        });
+    } else {
+      // Se não tem quebras duplas, tenta quebrar por frases ou por linha
+      paragrafos = texto.split(/\n/)
+        .map(p => p.trim())
+        .filter(p => p !== '')
+        .reduce((acc, linha) => {
+          // Se a linha é muito curta, junta com a anterior
+          if (acc.length > 0 && linha.length < 100 && !linha.match(/[.!?]$/)) {
+            acc[acc.length - 1] += ' ' + linha;
+          } else {
+            acc.push(linha);
+          }
+          return acc;
+        }, []);
+    }
     
     return paragrafos.length > 0 ? paragrafos : [texto.trim()];
   }
@@ -83,12 +102,14 @@ const getBaseHTML = (title, content, currentPage = '') => {
         
         /* Parágrafos bem estruturados */
         .post-content p, .poem-content p, .article-content p {
-            margin-bottom: 1.5em;
+            margin-bottom: 2em;
+            margin-top: 1em;
             max-width: 100%;
             overflow-wrap: break-word;
             text-indent: 1.5em;
             orphans: 2;
             widows: 2;
+            display: block;
         }
         
         /* Primeiro parágrafo sem identação */
@@ -96,6 +117,7 @@ const getBaseHTML = (title, content, currentPage = '') => {
         .article-content p:first-child {
             text-indent: 0;
             font-weight: 500;
+            margin-top: 0;
         }
         
         /* Poemas com formatação especial */
@@ -189,11 +211,18 @@ const getBaseHTML = (title, content, currentPage = '') => {
             
             .post-content p, .article-content p {
                 text-indent: 1em;
-                margin-bottom: 1.2em;
+                margin-bottom: 1.8em;
+                margin-top: 0.8em;
             }
             
             .article-content {
                 padding: 1em;
+                max-width: 100%;
+            }
+            
+            .post-content p:first-child, 
+            .article-content p:first-child {
+                margin-top: 0;
             }
         }
     </style>
