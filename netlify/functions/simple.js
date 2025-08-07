@@ -1456,6 +1456,10 @@ app.get('/admin/poemas', isAuthenticated, (req, res) => {
                                 <i data-lucide="eye" style="width: 14px; height: 14px;"></i>
                                 Ver
                             </a>
+                            <a href="/admin/poemas/editar/${poema.id}" class="admin-btn admin-btn-small" style="background: var(--admin-accent); color: white; margin-right: 8px;">
+                                <i data-lucide="edit-3" style="width: 14px; height: 14px;"></i>
+                                Editar
+                            </a>
                             <button onclick="excluirPoema(${poema.id}, '${poema.title}')" class="admin-btn admin-btn-small" style="background: var(--admin-gradient-secondary); color: white; border: none;">
                                 <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i>
                                 Excluir
@@ -1504,6 +1508,10 @@ app.get('/admin/filosofia', isAuthenticated, (req, res) => {
                                 <i data-lucide="eye" style="width: 14px; height: 14px;"></i>
                                 Ver
                             </a>
+                            <a href="/admin/filosofia/editar/${artigo.id}" class="admin-btn admin-btn-small" style="background: var(--admin-accent); color: white; margin-right: 8px;">
+                                <i data-lucide="edit-3" style="width: 14px; height: 14px;"></i>
+                                Editar
+                            </a>
                             <button onclick="excluirFilosofia(${artigo.id}, '${artigo.title}')" class="admin-btn admin-btn-small" style="background: var(--admin-gradient-secondary); color: white; border: none;">
                                 <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i>
                                 Excluir
@@ -1551,6 +1559,10 @@ app.get('/admin/religiao', isAuthenticated, (req, res) => {
                             <a href="/religiao/${artigo.id}" class="admin-btn admin-btn-small" target="_blank" style="margin-right: 8px;">
                                 <i data-lucide="eye" style="width: 14px; height: 14px;"></i>
                                 Ver
+                            </a>
+                            <a href="/admin/religiao/editar/${artigo.id}" class="admin-btn admin-btn-small" style="background: var(--admin-accent); color: white; margin-right: 8px;">
+                                <i data-lucide="edit-3" style="width: 14px; height: 14px;"></i>
+                                Editar
                             </a>
                             <button onclick="excluirReligiao(${artigo.id}, '${artigo.title}')" class="admin-btn admin-btn-small" style="background: var(--admin-gradient-secondary); color: white; border: none;">
                                 <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i>
@@ -1936,6 +1948,249 @@ app.post('/admin/religiao/novo', isAuthenticated, async (req, res) => {
   }
 });
 
+// Rotas GET para edição de artigos
+app.get('/admin/poemas/editar/:id', isAuthenticated, (req, res) => {
+  const id = parseInt(req.params.id);
+  const poema = sampleData.poemas.find(p => p.id === id);
+  
+  if (!poema) {
+    return res.status(404).send('Poema não encontrado');
+  }
+  
+  const content = `
+    <div class="admin-header-actions">
+        <a href="/admin/poemas" class="admin-btn admin-btn-secondary">
+            <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i>
+            Voltar
+        </a>
+    </div>
+    
+    <div class="admin-card">
+        <div class="admin-card-header">
+            <h2 class="admin-card-title">
+                <i data-lucide="edit-3" style="width: 24px; height: 24px; margin-right: 12px; vertical-align: middle;"></i>
+                Editar Poema
+            </h2>
+            <p class="admin-card-subtitle">Edite o poema "${poema.title}"</p>
+        </div>
+        
+        <div class="admin-card-body">
+            <form method="POST" action="/admin/poemas/editar/${id}" class="admin-form">
+                <div class="admin-form-group">
+                    <label for="title" class="admin-form-label">Título do Poema</label>
+                    <input type="text" id="title" name="title" class="admin-form-input" 
+                           placeholder="Digite o título do poema" value="${poema.title}" required>
+                </div>
+                
+                <div class="admin-form-group">
+                    <label for="image" class="admin-form-label">
+                        <i data-lucide="image" style="width: 16px; height: 16px; margin-right: 8px;"></i>
+                        Imagem do Poema (Opcional)
+                    </label>
+                    <input type="url" id="image" name="image" class="admin-form-input" 
+                           placeholder="https://exemplo.com/imagem.jpg" value="${poema.image || ''}" style="padding: 15px;">
+                    <small style="color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-top: 8px; display: block;">
+                        🔗 Cole a URL da imagem. Formatos suportados: JPG, PNG, GIF, WEBP
+                    </small>
+                </div>
+                
+                <div class="admin-form-group">
+                    <label for="content" class="admin-form-label">Conteúdo</label>
+                    <textarea id="content" name="content" class="admin-form-textarea" 
+                              placeholder="Digite o poema (uma estrofe por linha, linha vazia para separar estrofes)" 
+                              rows="12" required>${poema.content.join('\\n')}</textarea>
+                    <small style="color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-top: 8px; display: block;">
+                        Dica: Use quebras de linha para separar versos e linhas vazias para separar estrofes
+                    </small>
+                </div>
+                
+                <div class="admin-form-group">
+                    <label for="date" class="admin-form-label">Data de Publicação</label>
+                    <input type="date" id="date" name="date" class="admin-form-input" 
+                           value="${poema.date}" required>
+                </div>
+                
+                <button type="submit" class="admin-btn admin-btn-primary" style="width: 100%; padding: 18px;">
+                    <i data-lucide="save" style="width: 20px; height: 20px; margin-right: 10px;"></i>
+                    Atualizar Poema
+                </button>
+            </form>
+        </div>
+    </div>
+  `;
+  
+  const html = getAdminHTML('Editar Poema - Z3Z Admin', content, 'poemas');
+  res.send(html);
+});
+
+app.get('/admin/filosofia/editar/:id', isAuthenticated, (req, res) => {
+  const id = parseInt(req.params.id);
+  const artigo = sampleData.filosofia.find(f => f.id === id);
+  
+  if (!artigo) {
+    return res.status(404).send('Artigo não encontrado');
+  }
+  
+  const content = `
+    <div class="admin-header-actions">
+        <a href="/admin/filosofia" class="admin-btn admin-btn-secondary">
+            <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i>
+            Voltar
+        </a>
+    </div>
+    
+    <div class="admin-card">
+        <div class="admin-card-header">
+            <h2 class="admin-card-title">
+                <i data-lucide="edit-3" style="width: 24px; height: 24px; margin-right: 12px; vertical-align: middle;"></i>
+                Editar Filosofia
+            </h2>
+            <p class="admin-card-subtitle">Edite o artigo "${artigo.title}"</p>
+        </div>
+        
+        <div class="admin-card-body">
+            <form method="POST" action="/admin/filosofia/editar/${id}" class="admin-form">
+                <div class="admin-form-group">
+                    <label for="title" class="admin-form-label">Título do Artigo</label>
+                    <input type="text" id="title" name="title" class="admin-form-input" 
+                           placeholder="Digite o título do artigo" value="${artigo.title}" required>
+                </div>
+                
+                <div class="admin-form-group">
+                    <label for="category" class="admin-form-label">Categoria</label>
+                    <select id="category" name="category" class="admin-form-input" required>
+                        <option value="existencial" ${artigo.category === 'existencial' ? 'selected' : ''}>Existencial</option>
+                        <option value="epistemologia" ${artigo.category === 'epistemologia' ? 'selected' : ''}>Epistemologia</option>
+                        <option value="ética" ${artigo.category === 'ética' ? 'selected' : ''}>Ética</option>
+                        <option value="metafísica" ${artigo.category === 'metafísica' ? 'selected' : ''}>Metafísica</option>
+                    </select>
+                </div>
+                
+                <div class="admin-form-group">
+                    <label for="image" class="admin-form-label">
+                        <i data-lucide="image" style="width: 16px; height: 16px; margin-right: 8px;"></i>
+                        Imagem do Artigo (Opcional)
+                    </label>
+                    <input type="url" id="image" name="image" class="admin-form-input" 
+                           placeholder="https://exemplo.com/imagem.jpg" value="${artigo.image || ''}" style="padding: 15px;">
+                    <small style="color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-top: 8px; display: block;">
+                        🔗 Cole a URL da imagem. Formatos suportados: JPG, PNG, GIF, WEBP
+                    </small>
+                </div>
+                
+                <div class="admin-form-group">
+                    <label for="content" class="admin-form-label">Conteúdo</label>
+                    <textarea id="content" name="content" class="admin-form-textarea" 
+                              placeholder="Digite o conteúdo do artigo (um parágrafo por linha)" 
+                              rows="15" required>${artigo.content.join('\\n\\n')}</textarea>
+                    <small style="color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-top: 8px; display: block;">
+                        Dica: Use quebras de linha duplas para separar parágrafos
+                    </small>
+                </div>
+                
+                <div class="admin-form-group">
+                    <label for="date" class="admin-form-label">Data de Publicação</label>
+                    <input type="date" id="date" name="date" class="admin-form-input" 
+                           value="${artigo.date}" required>
+                </div>
+                
+                <button type="submit" class="admin-btn admin-btn-primary" style="width: 100%; padding: 18px;">
+                    <i data-lucide="save" style="width: 20px; height: 20px; margin-right: 10px;"></i>
+                    Atualizar Artigo
+                </button>
+            </form>
+        </div>
+    </div>
+  `;
+  
+  const html = getAdminHTML('Editar Filosofia - Z3Z Admin', content, 'filosofia');
+  res.send(html);
+});
+
+app.get('/admin/religiao/editar/:id', isAuthenticated, (req, res) => {
+  const id = parseInt(req.params.id);
+  const artigo = sampleData.religiao.find(r => r.id === id);
+  
+  if (!artigo) {
+    return res.status(404).send('Artigo não encontrado');
+  }
+  
+  const content = `
+    <div class="admin-header-actions">
+        <a href="/admin/religiao" class="admin-btn admin-btn-secondary">
+            <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i>
+            Voltar
+        </a>
+    </div>
+    
+    <div class="admin-card">
+        <div class="admin-card-header">
+            <h2 class="admin-card-title">
+                <i data-lucide="edit-3" style="width: 24px; height: 24px; margin-right: 12px; vertical-align: middle;"></i>
+                Editar Religião
+            </h2>
+            <p class="admin-card-subtitle">Edite o artigo "${artigo.title}"</p>
+        </div>
+        
+        <div class="admin-card-body">
+            <form method="POST" action="/admin/religiao/editar/${id}" class="admin-form">
+                <div class="admin-form-group">
+                    <label for="title" class="admin-form-label">Título do Artigo</label>
+                    <input type="text" id="title" name="title" class="admin-form-input" 
+                           placeholder="Digite o título do artigo" value="${artigo.title}" required>
+                </div>
+                
+                <div class="admin-form-group">
+                    <label for="category" class="admin-form-label">Categoria</label>
+                    <select id="category" name="category" class="admin-form-input" required>
+                        <option value="teologia" ${artigo.category === 'teologia' ? 'selected' : ''}>Teologia</option>
+                        <option value="espiritualidade" ${artigo.category === 'espiritualidade' ? 'selected' : ''}>Espiritualidade</option>
+                        <option value="oração" ${artigo.category === 'oração' ? 'selected' : ''}>Oração</option>
+                        <option value="fé" ${artigo.category === 'fé' ? 'selected' : ''}>Fé</option>
+                    </select>
+                </div>
+                
+                <div class="admin-form-group">
+                    <label for="image" class="admin-form-label">
+                        <i data-lucide="image" style="width: 16px; height: 16px; margin-right: 8px;"></i>
+                        Imagem do Artigo (Opcional)
+                    </label>
+                    <input type="url" id="image" name="image" class="admin-form-input" 
+                           placeholder="https://exemplo.com/imagem.jpg" value="${artigo.image || ''}" style="padding: 15px;">
+                    <small style="color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-top: 8px; display: block;">
+                        🔗 Cole a URL da imagem. Formatos suportados: JPG, PNG, GIF, WEBP
+                    </small>
+                </div>
+                
+                <div class="admin-form-group">
+                    <label for="content" class="admin-form-label">Conteúdo</label>
+                    <textarea id="content" name="content" class="admin-form-textarea" 
+                              placeholder="Digite o conteúdo do artigo (um parágrafo por linha)" 
+                              rows="15" required>${artigo.content.join('\\n\\n')}</textarea>
+                    <small style="color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-top: 8px; display: block;">
+                        Dica: Use quebras de linha duplas para separar parágrafos
+                    </small>
+                </div>
+                
+                <div class="admin-form-group">
+                    <label for="date" class="admin-form-label">Data de Publicação</label>
+                    <input type="date" id="date" name="date" class="admin-form-input" 
+                           value="${artigo.date}" required>
+                </div>
+                
+                <button type="submit" class="admin-btn admin-btn-primary" style="width: 100%; padding: 18px;">
+                    <i data-lucide="save" style="width: 20px; height: 20px; margin-right: 10px;"></i>
+                    Atualizar Artigo
+                </button>
+            </form>
+        </div>
+    </div>
+  `;
+  
+  const html = getAdminHTML('Editar Religião - Z3Z Admin', content, 'religiao');
+  res.send(html);
+});
+
 // Rotas DELETE para excluir artigos
 app.delete('/admin/poemas/:id', isAuthenticated, (req, res) => {
   try {
@@ -1985,6 +2240,141 @@ app.delete('/admin/religiao/:id', isAuthenticated, (req, res) => {
   } catch (error) {
     console.error('Erro ao excluir artigo:', error);
     res.status(500).json({ success: false, message: 'Erro interno do servidor' });
+  }
+});
+
+// Rotas POST para atualizar artigos
+app.post('/admin/poemas/editar/:id', isAuthenticated, async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const { title, content, date, image } = req.body;
+    
+    const index = sampleData.poemas.findIndex(p => p.id === id);
+    
+    if (index === -1) {
+      return res.status(404).send('Poema não encontrado');
+    }
+    
+    // Processar conteúdo (quebrar em linhas)
+    const contentLines = content.split('\n').filter(line => line.trim() !== '');
+    
+    // Processar URL da imagem
+    let imagePath = null;
+    if (image && image.trim() !== '') {
+      // Validar se é uma URL válida
+      try {
+        new URL(image.trim());
+        imagePath = image.trim();
+      } catch (urlError) {
+        console.error('URL de imagem inválida:', urlError);
+        // Continuar sem imagem se a URL for inválida
+      }
+    }
+    
+    // Atualizar poema existente
+    sampleData.poemas[index] = {
+      ...sampleData.poemas[index],
+      title: title.trim(),
+      content: contentLines,
+      date: date,
+      image: imagePath,
+      excerpt: contentLines[0] || ''
+    };
+    
+    res.redirect('/admin/poemas');
+  } catch (error) {
+    console.error('Erro ao atualizar poema:', error);
+    res.status(500).send('Erro interno do servidor');
+  }
+});
+
+app.post('/admin/filosofia/editar/:id', isAuthenticated, async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const { title, content, category, date, image } = req.body;
+    
+    const index = sampleData.filosofia.findIndex(f => f.id === id);
+    
+    if (index === -1) {
+      return res.status(404).send('Artigo não encontrado');
+    }
+    
+    // Processar conteúdo (quebrar em parágrafos)
+    const contentParagraphs = content.split('\n\n').filter(line => line.trim() !== '');
+    
+    // Processar URL da imagem
+    let imagePath = null;
+    if (image && image.trim() !== '') {
+      // Validar se é uma URL válida
+      try {
+        new URL(image.trim());
+        imagePath = image.trim();
+      } catch (urlError) {
+        console.error('URL de imagem inválida:', urlError);
+        // Continuar sem imagem se a URL for inválida
+      }
+    }
+    
+    // Atualizar artigo existente
+    sampleData.filosofia[index] = {
+      ...sampleData.filosofia[index],
+      title: title.trim(),
+      content: contentParagraphs,
+      category: category,
+      date: date,
+      image: imagePath,
+      excerpt: contentParagraphs[0] ? contentParagraphs[0].substring(0, 150) + '...' : ''
+    };
+    
+    res.redirect('/admin/filosofia');
+  } catch (error) {
+    console.error('Erro ao atualizar artigo de filosofia:', error);
+    res.status(500).send('Erro interno do servidor');
+  }
+});
+
+app.post('/admin/religiao/editar/:id', isAuthenticated, async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const { title, content, category, date, image } = req.body;
+    
+    const index = sampleData.religiao.findIndex(r => r.id === id);
+    
+    if (index === -1) {
+      return res.status(404).send('Artigo não encontrado');
+    }
+    
+    // Processar conteúdo (quebrar em parágrafos)
+    const contentParagraphs = content.split('\n\n').filter(line => line.trim() !== '');
+    
+    // Processar URL da imagem
+    let imagePath = null;
+    if (image && image.trim() !== '') {
+      // Validar se é uma URL válida
+      try {
+        new URL(image.trim());
+        imagePath = image.trim();
+      } catch (urlError) {
+        console.error('URL de imagem inválida:', urlError);
+        // Continuar sem imagem se a URL for inválida
+      }
+    }
+    
+    // Atualizar artigo existente
+    sampleData.religiao[index] = {
+      ...sampleData.religiao[index],
+      title: title.trim(),
+      content: contentParagraphs,
+      category: category,
+      date: date,
+      image: imagePath,
+      excerpt: contentParagraphs[0] ? contentParagraphs[0].substring(0, 150) + '...' : ''
+    };
+    
+    res.redirect('/admin/religiao');
+  } catch (error) {
+    console.error('Erro ao atualizar artigo de religião:', error);
+    res.status(500).send('Erro interno do servidor');
   }
 });
 
