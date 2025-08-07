@@ -75,7 +75,7 @@ dist
 
 # Gatsby files
 .cache/
-public
+# public - Removido: precisamos dos arquivos estáticos CSS/JS/images
 
 # Vuepress build output
 .vuepress/dist
