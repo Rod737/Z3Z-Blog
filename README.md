@@ -56,10 +56,19 @@ npm start
 ## 🌐 Deploy Online
 
 O site está hospedado em:
-- **Vercel**: Deploy automático via GitHub
+- **Netlify**: Deploy automático via GitHub
 - **URL**: Em breve disponível
 
-### Deploy Manual
+### Deploy no Netlify
+1. Acesse https://netlify.com
+2. Conecte o repositório GitHub `Rod737/Z3Z-Blog`
+3. Configure:
+   - Build command: `npm run build`
+   - Publish directory: `public`
+   - Functions directory: `netlify/functions`
+4. Deploy automático a cada commit
+
+### Deploy Manual Alternativo (Vercel)
 1. Conecte o repositório GitHub ao Vercel
 2. Configure as variáveis de ambiente
 3. Deploy automático a cada commit
