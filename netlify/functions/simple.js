@@ -464,6 +464,57 @@ const getAdminHTML = (title, content, currentPage = '') => {
         background: rgba(255, 152, 0, 0.1);
         color: #FF9800;
     }
+    
+    /* Estilos para formulários */
+    .admin-form-group {
+        margin-bottom: 25px;
+    }
+    .admin-form-label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: var(--admin-primary);
+        font-family: var(--font-secondary);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: 0.9rem;
+    }
+    .admin-form-input,
+    .admin-form-textarea,
+    .admin-form-select {
+        width: 100%;
+        padding: 15px 20px;
+        background: white;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        color: #333;
+        font-size: 1rem;
+        font-family: var(--font-body);
+        transition: all 0.3s ease;
+    }
+    .admin-form-input:focus,
+    .admin-form-textarea:focus,
+    .admin-form-select:focus {
+        outline: none;
+        border-color: var(--admin-accent);
+        box-shadow: 0 0 0 3px rgba(255, 179, 0, 0.1);
+        transform: translateY(-1px);
+    }
+    .admin-form-textarea {
+        min-height: 120px;
+        resize: vertical;
+        line-height: 1.6;
+    }
+    .admin-btn-secondary {
+        background: rgba(108, 117, 125, 0.1);
+        color: #6c757d;
+        border: 1px solid #dee2e6;
+    }
+    .admin-btn-secondary:hover {
+        background: #6c757d;
+        color: white;
+        transform: translateY(-1px);
+    }
     </style>
 </head>
 <body>
@@ -1398,6 +1449,271 @@ app.get('/admin/religiao', isAuthenticated, (req, res) => {
   
   const html = getAdminHTML('Religião - Z3Z Admin', content, 'religiao');
   res.send(html);
+});
+
+// Rotas para criar novos artigos
+app.get('/admin/poemas/novo', isAuthenticated, (req, res) => {
+  const content = `
+    <div class="admin-header-actions">
+        <a href="/admin/poemas" class="admin-btn admin-btn-secondary">
+            <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i>
+            Voltar
+        </a>
+    </div>
+    
+    <div class="admin-card">
+        <div class="admin-card-header">
+            <h2 class="admin-card-title">
+                <i data-lucide="feather" style="width: 24px; height: 24px; margin-right: 12px; vertical-align: middle;"></i>
+                Novo Poema
+            </h2>
+            <p class="admin-card-subtitle">Crie um novo poema para inspirar as almas</p>
+        </div>
+        
+        <div class="admin-card-body">
+            <form method="POST" action="/admin/poemas/novo" class="admin-form">
+                <div class="admin-form-group">
+                    <label for="title" class="admin-form-label">Título do Poema</label>
+                    <input type="text" id="title" name="title" class="admin-form-input" 
+                           placeholder="Digite o título do poema" required>
+                </div>
+                
+                <div class="admin-form-group">
+                    <label for="content" class="admin-form-label">Conteúdo</label>
+                    <textarea id="content" name="content" class="admin-form-textarea" 
+                              placeholder="Digite o poema (uma estrofe por linha, linha vazia para separar estrofes)" 
+                              rows="12" required></textarea>
+                    <small style="color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-top: 8px; display: block;">
+                        Dica: Use quebras de linha para separar versos e linhas vazias para separar estrofes
+                    </small>
+                </div>
+                
+                <div class="admin-form-group">
+                    <label for="date" class="admin-form-label">Data de Publicação</label>
+                    <input type="date" id="date" name="date" class="admin-form-input" 
+                           value="${new Date().toISOString().split('T')[0]}" required>
+                </div>
+                
+                <button type="submit" class="admin-btn admin-btn-primary" style="width: 100%; padding: 18px;">
+                    <i data-lucide="save" style="width: 20px; height: 20px; margin-right: 10px;"></i>
+                    Publicar Poema
+                </button>
+            </form>
+        </div>
+    </div>
+  `;
+  
+  const html = getAdminHTML('Novo Poema - Z3Z Admin', content, 'poemas');
+  res.send(html);
+});
+
+app.get('/admin/filosofia/novo', isAuthenticated, (req, res) => {
+  const content = `
+    <div class="admin-header-actions">
+        <a href="/admin/filosofia" class="admin-btn admin-btn-secondary">
+            <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i>
+            Voltar
+        </a>
+    </div>
+    
+    <div class="admin-card">
+        <div class="admin-card-header">
+            <h2 class="admin-card-title">
+                <i data-lucide="brain" style="width: 24px; height: 24px; margin-right: 12px; vertical-align: middle;"></i>
+                Novo Artigo de Filosofia
+            </h2>
+            <p class="admin-card-subtitle">Compartilhe reflexões profundas sobre a existência</p>
+        </div>
+        
+        <div class="admin-card-body">
+            <form method="POST" action="/admin/filosofia/novo" class="admin-form">
+                <div class="admin-form-group">
+                    <label for="title" class="admin-form-label">Título do Artigo</label>
+                    <input type="text" id="title" name="title" class="admin-form-input" 
+                           placeholder="Digite o título do artigo" required>
+                </div>
+                
+                <div class="admin-form-group">
+                    <label for="category" class="admin-form-label">Categoria</label>
+                    <select id="category" name="category" class="admin-form-select" required>
+                        <option value="">Selecione uma categoria</option>
+                        <option value="existencial">Existencial</option>
+                        <option value="epistemologia">Epistemologia</option>
+                        <option value="etica">Ética</option>
+                        <option value="metafisica">Metafísica</option>
+                        <option value="logica">Lógica</option>
+                    </select>
+                </div>
+                
+                <div class="admin-form-group">
+                    <label for="content" class="admin-form-label">Conteúdo</label>
+                    <textarea id="content" name="content" class="admin-form-textarea" 
+                              placeholder="Digite o conteúdo do artigo (um parágrafo por linha)" 
+                              rows="15" required></textarea>
+                    <small style="color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-top: 8px; display: block;">
+                        Cada linha será um parágrafo separado
+                    </small>
+                </div>
+                
+                <div class="admin-form-group">
+                    <label for="date" class="admin-form-label">Data de Publicação</label>
+                    <input type="date" id="date" name="date" class="admin-form-input" 
+                           value="${new Date().toISOString().split('T')[0]}" required>
+                </div>
+                
+                <button type="submit" class="admin-btn admin-btn-primary" style="width: 100%; padding: 18px;">
+                    <i data-lucide="save" style="width: 20px; height: 20px; margin-right: 10px;"></i>
+                    Publicar Artigo
+                </button>
+            </form>
+        </div>
+    </div>
+  `;
+  
+  const html = getAdminHTML('Novo Artigo de Filosofia - Z3Z Admin', content, 'filosofia');
+  res.send(html);
+});
+
+app.get('/admin/religiao/novo', isAuthenticated, (req, res) => {
+  const content = `
+    <div class="admin-header-actions">
+        <a href="/admin/religiao" class="admin-btn admin-btn-secondary">
+            <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i>
+            Voltar
+        </a>
+    </div>
+    
+    <div class="admin-card">
+        <div class="admin-card-header">
+            <h2 class="admin-card-title">
+                <i data-lucide="cross" style="width: 24px; height: 24px; margin-right: 12px; vertical-align: middle;"></i>
+                Novo Artigo de Religião
+            </h2>
+            <p class="admin-card-subtitle">Compartilhe ensinamentos espirituais e reflexões sagradas</p>
+        </div>
+        
+        <div class="admin-card-body">
+            <form method="POST" action="/admin/religiao/novo" class="admin-form">
+                <div class="admin-form-group">
+                    <label for="title" class="admin-form-label">Título do Artigo</label>
+                    <input type="text" id="title" name="title" class="admin-form-input" 
+                           placeholder="Digite o título do artigo" required>
+                </div>
+                
+                <div class="admin-form-group">
+                    <label for="category" class="admin-form-label">Categoria</label>
+                    <select id="category" name="category" class="admin-form-select" required>
+                        <option value="">Selecione uma categoria</option>
+                        <option value="teologia">Teologia</option>
+                        <option value="espiritualidade">Espiritualidade</option>
+                        <option value="oracao">Oração</option>
+                        <option value="fe">Fé</option>
+                        <option value="santos">Santos</option>
+                    </select>
+                </div>
+                
+                <div class="admin-form-group">
+                    <label for="content" class="admin-form-label">Conteúdo</label>
+                    <textarea id="content" name="content" class="admin-form-textarea" 
+                              placeholder="Digite o conteúdo do artigo (um parágrafo por linha)" 
+                              rows="15" required></textarea>
+                    <small style="color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-top: 8px; display: block;">
+                        Cada linha será um parágrafo separado
+                    </small>
+                </div>
+                
+                <div class="admin-form-group">
+                    <label for="date" class="admin-form-label">Data de Publicação</label>
+                    <input type="date" id="date" name="date" class="admin-form-input" 
+                           value="${new Date().toISOString().split('T')[0]}" required>
+                </div>
+                
+                <button type="submit" class="admin-btn admin-btn-primary" style="width: 100%; padding: 18px;">
+                    <i data-lucide="save" style="width: 20px; height: 20px; margin-right: 10px;"></i>
+                    Publicar Artigo
+                </button>
+            </form>
+        </div>
+    </div>
+  `;
+  
+  const html = getAdminHTML('Novo Artigo de Religião - Z3Z Admin', content, 'religiao');
+  res.send(html);
+});
+
+// Rotas POST para salvar novos artigos
+app.post('/admin/poemas/novo', isAuthenticated, (req, res) => {
+  const { title, content, date } = req.body;
+  
+  // Criar novo ID
+  const newId = Math.max(...sampleData.poemas.map(p => p.id)) + 1;
+  
+  // Processar conteúdo (quebrar em linhas)
+  const contentLines = content.split('\n').filter(line => line.trim() !== '');
+  
+  // Criar novo poema
+  const newPoema = {
+    id: newId,
+    title: title.trim(),
+    content: contentLines,
+    date: date,
+    excerpt: contentLines[0] || ''
+  };
+  
+  // Adicionar aos dados
+  sampleData.poemas.unshift(newPoema);
+  
+  res.redirect('/admin/poemas');
+});
+
+app.post('/admin/filosofia/novo', isAuthenticated, (req, res) => {
+  const { title, content, category, date } = req.body;
+  
+  // Criar novo ID
+  const newId = Math.max(...sampleData.filosofia.map(a => a.id)) + 1;
+  
+  // Processar conteúdo (quebrar em parágrafos)
+  const contentParagraphs = content.split('\n').filter(line => line.trim() !== '');
+  
+  // Criar novo artigo
+  const newArtigo = {
+    id: newId,
+    title: title.trim(),
+    content: contentParagraphs,
+    category: category,
+    date: date,
+    excerpt: contentParagraphs[0] ? contentParagraphs[0].substring(0, 150) + '...' : ''
+  };
+  
+  // Adicionar aos dados
+  sampleData.filosofia.unshift(newArtigo);
+  
+  res.redirect('/admin/filosofia');
+});
+
+app.post('/admin/religiao/novo', isAuthenticated, (req, res) => {
+  const { title, content, category, date } = req.body;
+  
+  // Criar novo ID
+  const newId = Math.max(...sampleData.religiao.map(a => a.id)) + 1;
+  
+  // Processar conteúdo (quebrar em parágrafos)
+  const contentParagraphs = content.split('\n').filter(line => line.trim() !== '');
+  
+  // Criar novo artigo
+  const newArtigo = {
+    id: newId,
+    title: title.trim(),
+    content: contentParagraphs,
+    category: category,
+    date: date,
+    excerpt: contentParagraphs[0] ? contentParagraphs[0].substring(0, 150) + '...' : ''
+  };
+  
+  // Adicionar aos dados
+  sampleData.religiao.unshift(newArtigo);
+  
+  res.redirect('/admin/religiao');
 });
 
 // Logout admin
