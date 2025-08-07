@@ -226,6 +226,42 @@ const getBaseHTML = (title, content, currentPage = '') => {
             border-left: 3px solid #1A237E;
         }
         
+        /* Cards de posts nas páginas de listagem */
+        .post-excerpt {
+            line-height: 1.6;
+            color: #666;
+            margin: 15px 0;
+            font-size: 0.95rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-height: 4.8em; /* 3 linhas × 1.6 line-height */
+        }
+        
+        .post-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #333;
+            margin: 10px 0;
+            line-height: 1.4;
+        }
+        
+        .post-card {
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background: white;
+            margin-bottom: 30px;
+        }
+        
+        .post-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
         /* Responsividade para móveis */
         @media (max-width: 768px) {
             .post-content, .poem-content, .article-content {
@@ -248,6 +284,16 @@ const getBaseHTML = (title, content, currentPage = '') => {
             .post-content p:first-child, 
             .article-content p:first-child {
                 margin-top: 0;
+            }
+            
+            .post-excerpt {
+                font-size: 0.9rem;
+                -webkit-line-clamp: 4;
+                max-height: 5.6em; /* 4 linhas em mobile */
+            }
+            
+            .post-title {
+                font-size: 1.2rem;
             }
         }
     </style>
@@ -367,7 +413,7 @@ const sampleData = {
       date: "2025-01-03",
       author: "Admin",
       image: "https://images.unsplash.com/photo-1501436513145-30f24e19fcc4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80",
-      excerpt: "Reflexões sobre a percepção humana do tempo e sua influência na construção do sentido da vida..."
+      excerpt: "Reflexões sobre a percepção humana do tempo e sua influência na construção do sentido da vida. O tempo é uma das dimensões mais misteriosas da existência humana."
     },
     {
       id: 2,
@@ -379,7 +425,7 @@ const sampleData = {
       date: "2023-08-07",
       author: "Admin", 
       image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80",
-      excerpt: "Caos Inclusivo: O Riso da Desordem e o Exílio do Logos. Uma ontologia reversa que propõe o retorno ao ventre primordial..."
+      excerpt: "Caos Inclusivo: O Riso da Desordem e o Exílio do Logos. Em uma era onde o Logos se traveste de luz, é preciso retornar ao ventre primordial de todas as coisas: o Caos."
     }
   ],
   religiao: [
@@ -1049,7 +1095,7 @@ app.get('/filosofia', (req, res) => {
                     <div class="post-content" style="padding: ${artigo.image ? '20px' : '20px 20px 0'};">
                         <div class="post-category filosofia">Filosofia</div>
                         <h4 class="post-title">${artigo.title}</h4>
-                        <p class="post-excerpt">${artigo.content[0].substring(0, 100)}...</p>
+                        <p class="post-excerpt">${artigo.excerpt}</p>
                         <div class="post-meta">
                             <span class="post-date">${artigo.date}</span>
                         </div>
@@ -1078,7 +1124,7 @@ app.get('/religiao', (req, res) => {
                     <div class="post-content" style="padding: ${artigo.image ? '20px' : '20px 20px 0'};">
                         <div class="post-category religiao">Religião</div>
                         <h4 class="post-title">${artigo.title}</h4>
-                        <p class="post-excerpt">${artigo.content[0].substring(0, 100)}...</p>
+                        <p class="post-excerpt">${artigo.excerpt}</p>
                         <div class="post-meta">
                             <span class="post-date">${artigo.date}</span>
                         </div>
