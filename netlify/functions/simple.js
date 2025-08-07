@@ -8,10 +8,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Servir arquivos estáticos
-app.use('/css', express.static(path.resolve(__dirname, '../../public/css')));
-app.use('/js', express.static(path.resolve(__dirname, '../../public/js')));
-app.use('/images', express.static(path.resolve(__dirname, '../../public/images')));
+// Arquivos estáticos serão servidos diretamente pelo Netlify via publish directory
 
 // Template HTML base
 const getBaseHTML = (title, content, currentPage = '') => {
