@@ -335,28 +335,40 @@ const sampleData = {
     {
       id: 1,
       title: "A Natureza do Tempo",
-      content: ["Reflexões sobre a percepção humana do tempo e sua influência na construção do sentido da vida..."],
+      content: ["Reflexões sobre a percepção humana do tempo e sua influência na construção do sentido da vida. O tempo é uma das dimensões mais misteriosas da existência humana.", "Como medimos algo que não podemos tocar? Como compreendemos a passagem de momentos que já não existem mais? Estas questões nos levam ao cerne da filosofia temporal.", "O tempo subjetivo difere drasticamente do tempo objetivo. Enquanto o relógio marca minutos uniformes, nossa experiência temporal varia conforme nosso estado emocional e mental."],
       category: "existencial", 
       tags: ["tempo", "existência", "filosofia"],
       published: true,
-      date: "3 de Janeiro, 2025",
+      date: "2025-01-03",
       author: "Admin",
-      image: null,
-      excerpt: "Reflexões sobre a percepção humana do tempo..."
+      image: "https://images.unsplash.com/photo-1501436513145-30f24e19fcc4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80",
+      excerpt: "Reflexões sobre a percepção humana do tempo e sua influência na construção do sentido da vida..."
+    },
+    {
+      id: 2,
+      title: "Anti-Cosmo",
+      content: ["Caos Inclusivo: O Riso da Desordem e o Exílio do Logos Em uma era onde o Logos se traveste de luz, onde a ordem se impõe como axioma inquestionável, é preciso retornar ao ventre primordial de todas as coisas: o Caos. Não o caos como ruína ou desgoverno, mas o Caos como gênese absoluta, como potência de tudo o que é e do que jamais será. O Caos, neste sentido, não é o outro da ordem. Ele é", "sua matriz. É a sombra onde a forma se gesta. A filosofia Anti-Cosmo propõe uma ontologia reversa: não do Ser ao Nada, mas do Nada ao Tudo. E esse Tudo se chama Caos. O Caos não seleciona. Não hierarquiza. Ele inclui. Inclui os deuses e os demônios, os santos e os estupradores, os poetas e os assassinos, o orgasmo e o câncer. Tudo o que foi, é ou será, nasce do seio escuro e", "pulsante do Caos. É por isso que dizemos: o Caos é inclusivo. A Ordem é excludente. A Ordem precisa preservar sua forma, impor sua pureza, proteger sua identidade. Já o Caos ri de tudo isso. Ele sabe que a perfeição só se revela diante da imperfeição, que o prazer só tem sabor porque há a dor. A luz só brilha porque há noite. A forma só se destaca porque há fundo. Quando se erige um deus — qualquer deus — se constrói também um sistema."],
+      category: "metafísica",
+      tags: ["caos", "ordem", "ontologia"],
+      published: true,
+      date: "2023-08-07",
+      author: "Admin", 
+      image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80",
+      excerpt: "Caos Inclusivo: O Riso da Desordem e o Exílio do Logos. Uma ontologia reversa que propõe o retorno ao ventre primordial..."
     }
   ],
   religiao: [
     {
       id: 1,
       title: "Fé e Razão: Um Diálogo",
-      content: ["Explorando a harmonia entre a fé religiosa e o pensamento racional na busca pela verdade..."],
+      content: ["Explorando a harmonia entre a fé religiosa e o pensamento racional na busca pela verdade. Esta questão tem ocupado teólogos e filósofos ao longo dos séculos.", "A fé não se opõe necessariamente à razão, mas pode complementá-la. Santo Tomás de Aquino demonstrou que a razão pode nos levar até certos limites do conhecimento divino, onde a fé toma o relevo.", "Este diálogo contínuo entre fé e razão enriquece tanto a experiência religiosa quanto a investigação filosófica, criando pontes entre o transcendente e o imanente."],
       category: "teologia",
       tags: ["fé", "razão", "diálogo"],
       published: true,
-      date: "1° de Janeiro, 2025",
+      date: "2025-01-01",
       author: "Admin",
-      image: null,
-      excerpt: "Explorando a harmonia entre a fé religiosa..."
+      image: "https://images.unsplash.com/photo-1544022613-e87ca75a784a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80",
+      excerpt: "Explorando a harmonia entre a fé religiosa e o pensamento racional na busca pela verdade..."
     }
   ]
 };
@@ -1117,6 +1129,9 @@ app.get('/filosofia/:id', (req, res) => {
                     <span class="single-date">${artigo.date}</span>
                 </div>
             </header>
+            ${artigo.image ? `<div class="single-image" style="text-align: center; margin: 30px 0;">
+                <img src="${artigo.image}" alt="${artigo.title}" style="max-width: 100%; height: auto; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+            </div>` : ''}
             <div class="single-body article-content">
                 ${artigo.content.map(p => `<p>${p}</p>`).join('')}
             </div>
@@ -1147,6 +1162,9 @@ app.get('/religiao/:id', (req, res) => {
                     <span class="single-date">${artigo.date}</span>
                 </div>
             </header>
+            ${artigo.image ? `<div class="single-image" style="text-align: center; margin: 30px 0;">
+                <img src="${artigo.image}" alt="${artigo.title}" style="max-width: 100%; height: auto; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+            </div>` : ''}
             <div class="single-body article-content">
                 ${artigo.content.map(p => `<p>${p}</p>`).join('')}
             </div>
