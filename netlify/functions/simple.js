@@ -64,23 +64,7 @@ function capitalizarFrases(texto) {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Rota para servir favicon
-app.get('/favicon.ico', (req, res) => {
-  try {
-    const faviconPath = path.join(process.cwd(), 'favicon.ico');
-    if (fs.existsSync(faviconPath)) {
-      res.setHeader('Content-Type', 'image/x-icon');
-      res.setHeader('Cache-Control', 'public, max-age=86400'); // Cache por 1 dia
-      const favicon = fs.readFileSync(faviconPath);
-      res.send(favicon);
-    } else {
-      res.status(404).send('Favicon not found');
-    }
-  } catch (error) {
-    console.error('Erro ao servir favicon:', error);
-    res.status(500).send('Erro interno do servidor');
-  }
-});
+// Favicon será servido como arquivo estático pelo Netlify
 
 // Configuração de sessão para admin
 app.use(session({

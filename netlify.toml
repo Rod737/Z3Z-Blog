@@ -29,7 +29,7 @@
 # Servir favicon
 [[redirects]]
   from = "/favicon.ico"
-  to = "/.netlify/functions/simple/favicon.ico"
+  to = "/favicon.ico"
   status = 200
 
 # Redirect remaining routes to Netlify function
