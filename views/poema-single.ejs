@@ -36,7 +36,10 @@
     <!-- Seção de Comentários -->
     <section class="comments-section" id="comments">
         <div class="comments-header">
-            <h3 class="comments-title">💭 Compartilhe suas Reflexões</h3>
+            <h3 class="comments-title">
+                <i data-lucide="message-circle" style="width: 24px; height: 24px; margin-right: 10px; color: var(--primary-gold); vertical-align: middle;"></i>
+                Compartilhe suas Reflexões
+            </h3>
             <p class="comments-subtitle">Deixe sua impressão sobre este poema e conecte-se com outros leitores</p>
         </div>
 
@@ -60,7 +63,7 @@
                               placeholder="Compartilhe suas reflexões sobre este poema..."></textarea>
                 </div>
                 <button type="submit" class="comment-form-submit">
-                    <span class="comment-submit-icon">📝</span>
+                    <i data-lucide="send" class="comment-submit-icon" style="width: 18px; height: 18px; margin-right: 8px;"></i>
                     <span class="comment-submit-text">Publicar Comentário</span>
                 </button>
             </form>
@@ -79,7 +82,7 @@
                 <span>Carregando comentários...</span>
             </div>
             <div class="comments-empty" id="commentsEmpty" style="display: none;">
-                <div class="empty-icon">💭</div>
+                <i data-lucide="message-circle" class="empty-icon" style="width: 48px; height: 48px; color: var(--medium-gray);"></i>
                 <p>Seja o primeiro a comentar sobre este poema!</p>
             </div>
         </div>

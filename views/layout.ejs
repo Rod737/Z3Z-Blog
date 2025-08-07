@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Oswald:wght@400;600;700&family=Roboto+Slab:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 </head>
 <body>
     <header class="header">
@@ -80,7 +81,7 @@
     <!-- Widget YouTube Premium -->
     <div class="youtube-widget">
         <a href="https://www.youtube.com/@OsEscolhidosDivinos" target="_blank" class="youtube-button">
-            <span class="youtube-icon">📺</span>
+            <i data-lucide="youtube" class="youtube-icon" style="width: 20px; height: 20px;"></i>
             <span class="youtube-text">YouTube</span>
         </a>
         <div class="youtube-tooltip">
@@ -93,15 +94,22 @@
     <div class="youtube-floating" id="youtubeFloating">
         <div class="youtube-card">
             <button class="youtube-close" onclick="closeYouTubeCard()">&times;</button>
-            <h3>🎥 Visite Nosso Canal!</h3>
+            <h3>
+                <i data-lucide="video" style="width: 24px; height: 24px; margin-right: 8px; color: var(--primary-gold); vertical-align: middle;"></i>
+                Visite Nosso Canal!
+            </h3>
             <p>Explore vídeos exclusivos sobre espiritualidade, filosofia e religião no canal "Os Escolhidos Divinos".</p>
             <a href="https://www.youtube.com/@OsEscolhidosDivinos" target="_blank" class="youtube-card-btn">
-                <span>📺</span>
+                <i data-lucide="play-circle" style="width: 18px; height: 18px; margin-right: 6px;"></i>
                 <span>Visitar Canal</span>
             </a>
         </div>
     </div>
 
     <script src="/js/script.js"></script>
+    <script>
+        // Inicializar ícones Lucide
+        lucide.createIcons();
+    </script>
 </body>
 </html>
