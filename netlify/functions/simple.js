@@ -10,6 +10,36 @@ const app = express();
 
 // Configurações de upload removidas - agora usando URL direta
 
+// Função para formatar texto com melhor estrutura
+function formatarTexto(texto, tipo = 'paragrafo') {
+  if (!texto || texto.trim() === '') return [];
+  
+  if (tipo === 'poema') {
+    // Para poemas: preserva quebras de linha e estrutura de estrofes
+    return texto.split('\n')
+      .map(linha => linha.trim())
+      .filter(linha => linha !== '' || texto.includes('\n\n')); // Preserva linhas vazias se houver quebras duplas
+  } else {
+    // Para artigos: cria parágrafos bem estruturados
+    const paragrafos = texto.split('\n\n')
+      .map(p => p.trim())
+      .filter(p => p !== '')
+      .map(p => {
+        // Remove quebras de linha extras dentro do parágrafo
+        return p.replace(/\n+/g, ' ').trim();
+      });
+    
+    return paragrafos.length > 0 ? paragrafos : [texto.trim()];
+  }
+}
+
+// Função para capitalizar primeira letra das frases
+function capitalizarFrases(texto) {
+  return texto.replace(/(^|[.!?]\s+)([a-z])/g, function(match, p1, p2) {
+    return p1 + p2.toUpperCase();
+  });
+}
+
 // Middlewares básicos
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -44,21 +74,127 @@ const getBaseHTML = (title, content, currentPage = '') => {
             word-wrap: break-word;
             overflow-wrap: break-word;
             hyphens: auto;
-            line-height: 1.8;
+            line-height: 1.9;
             white-space: pre-wrap;
+            font-size: 1.1rem;
+            text-align: justify;
+            text-justify: inter-word;
         }
         
+        /* Parágrafos bem estruturados */
         .post-content p, .poem-content p, .article-content p {
-            margin-bottom: 1.2em;
+            margin-bottom: 1.5em;
             max-width: 100%;
             overflow-wrap: break-word;
+            text-indent: 1.5em;
+            orphans: 2;
+            widows: 2;
         }
         
+        /* Primeiro parágrafo sem identação */
+        .post-content p:first-child, 
+        .article-content p:first-child {
+            text-indent: 0;
+            font-weight: 500;
+        }
+        
+        /* Poemas com formatação especial */
+        .poem-content {
+            text-align: left;
+            text-indent: 0;
+            font-style: italic;
+            padding: 2em 1em;
+            background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
+            border-left: 4px solid rgba(183, 28, 28, 0.3);
+            border-radius: 0 8px 8px 0;
+            margin: 1.5em 0;
+        }
+        
+        .poem-content p {
+            text-indent: 0;
+            margin-bottom: 0.8em;
+        }
+        
+        /* Estrofes de poemas */
+        .poem-content br + br {
+            margin-bottom: 1.5em;
+            display: block;
+        }
+        
+        /* Artigos com melhor estrutura */
+        .article-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2em 1.5em;
+        }
+        
+        .article-content h1, 
+        .article-content h2, 
+        .article-content h3 {
+            color: #B71C1C;
+            margin: 2em 0 1em 0;
+            font-family: 'Oswald', sans-serif;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+        
+        /* Citações */
+        .article-content blockquote,
+        .post-content blockquote {
+            border-left: 4px solid #FFB300;
+            padding-left: 1.5em;
+            margin: 2em 0;
+            font-style: italic;
+            color: #666;
+            background: rgba(255, 179, 0, 0.05);
+            border-radius: 0 8px 8px 0;
+            padding: 1em 1.5em;
+        }
+        
+        /* Listas melhoradas */
+        .post-content ul, 
+        .article-content ul,
+        .post-content ol, 
+        .article-content ol {
+            margin: 1.5em 0;
+            padding-left: 2em;
+        }
+        
+        .post-content li, 
+        .article-content li {
+            margin-bottom: 0.5em;
+            line-height: 1.7;
+        }
+        
+        /* Texto pré-formatado */
         .post-content pre, .poem-content pre, .article-content pre {
             white-space: pre-wrap;
             word-wrap: break-word;
             overflow-wrap: break-word;
             font-family: inherit;
+            background: rgba(0,0,0,0.05);
+            padding: 1em;
+            border-radius: 6px;
+            margin: 1.5em 0;
+            border-left: 3px solid #1A237E;
+        }
+        
+        /* Responsividade para móveis */
+        @media (max-width: 768px) {
+            .post-content, .poem-content, .article-content {
+                font-size: 1rem;
+                line-height: 1.8;
+                padding: 1em 0.5em;
+            }
+            
+            .post-content p, .article-content p {
+                text-indent: 1em;
+                margin-bottom: 1.2em;
+            }
+            
+            .article-content {
+                padding: 1em;
+            }
         }
     </style>
 </head>
@@ -921,8 +1057,8 @@ app.get('/poemas/:id', (req, res) => {
             ${poema.image ? `<div class="single-image" style="text-align: center; margin: 30px 0;">
                 <img src="${poema.image}" alt="${poema.title}" style="max-width: 100%; height: auto; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
             </div>` : ''}
-            <div class="single-body poem-content-full">
-                ${poema.content.map(line => line ? `${line}<br>` : '<br><br>').join('')}
+            <div class="single-body poem-content">
+                ${poema.content.map(line => line ? `<p>${line}</p>` : '<br>').join('')}
             </div>
             <div class="single-navigation">
                 <a href="/poemas" class="back-link">← Voltar aos Poemas</a>
@@ -952,7 +1088,7 @@ app.get('/filosofia/:id', (req, res) => {
                     <span class="single-date">${artigo.date}</span>
                 </div>
             </header>
-            <div class="single-body">
+            <div class="single-body article-content">
                 ${artigo.content.map(p => `<p>${p}</p>`).join('')}
             </div>
             <div class="single-navigation">
@@ -982,7 +1118,7 @@ app.get('/religiao/:id', (req, res) => {
                     <span class="single-date">${artigo.date}</span>
                 </div>
             </header>
-            <div class="single-body">
+            <div class="single-body article-content">
                 ${artigo.content.map(p => `<p>${p}</p>`).join('')}
             </div>
             <div class="single-navigation">
@@ -1652,9 +1788,13 @@ app.get('/admin/poemas/novo', isAuthenticated, (req, res) => {
                     <label for="content" class="admin-form-label">Conteúdo</label>
                     <textarea id="content" name="content" class="admin-form-textarea" 
                               placeholder="Digite o poema (uma estrofe por linha, linha vazia para separar estrofes)" 
-                              rows="20" required></textarea>
+                              rows="20" spellcheck="true" lang="pt-BR" required></textarea>
                     <small style="color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-top: 8px; display: block;">
-                        Dica: Use quebras de linha para separar versos e linhas vazias para separar estrofes
+                        💡 <strong>Dicas de formatação:</strong><br>
+                        • Use uma linha para cada verso<br>
+                        • Deixe linhas vazias para separar estrofes<br>
+                        • O sistema corrige automaticamente maiúsculas e minúsculas<br>
+                        • Verificação ortográfica está ativada
                     </small>
                 </div>
                 
@@ -1731,7 +1871,7 @@ app.get('/admin/filosofia/novo', isAuthenticated, (req, res) => {
                     <label for="content" class="admin-form-label">Conteúdo</label>
                     <textarea id="content" name="content" class="admin-form-textarea" 
                               placeholder="Digite o conteúdo do artigo (um parágrafo por linha)" 
-                              rows="25" required></textarea>
+                              rows="25" spellcheck="true" lang="pt-BR" required></textarea>
                     <small style="color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-top: 8px; display: block;">
                         Cada linha será um parágrafo separado
                     </small>
@@ -1810,7 +1950,7 @@ app.get('/admin/religiao/novo', isAuthenticated, (req, res) => {
                     <label for="content" class="admin-form-label">Conteúdo</label>
                     <textarea id="content" name="content" class="admin-form-textarea" 
                               placeholder="Digite o conteúdo do artigo (um parágrafo por linha)" 
-                              rows="25" required></textarea>
+                              rows="25" spellcheck="true" lang="pt-BR" required></textarea>
                     <small style="color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-top: 8px; display: block;">
                         Cada linha será um parágrafo separado
                     </small>
@@ -1843,8 +1983,8 @@ app.post('/admin/poemas/novo', isAuthenticated, async (req, res) => {
     // Criar novo ID
     const newId = Math.max(...sampleData.poemas.map(p => p.id)) + 1;
     
-    // Processar conteúdo (preservar estrutura do poema incluindo linhas longas)
-    const contentLines = content.split('\n').map(line => line.trim());
+    // Processar conteúdo do poema com formatação melhorada
+    const contentLines = formatarTexto(content, 'poema').map(linha => capitalizarFrases(linha));
     
     // Processar URL da imagem
     let imagePath = null;
@@ -1890,8 +2030,8 @@ app.post('/admin/filosofia/novo', isAuthenticated, async (req, res) => {
     // Criar novo ID
     const newId = Math.max(...sampleData.filosofia.map(a => a.id)) + 1;
     
-    // Processar conteúdo (preservar parágrafos e quebras de linha)
-    const contentParagraphs = content.split('\n\n').map(para => para.trim()).filter(para => para !== '');
+    // Processar conteúdo do artigo com formatação melhorada
+    const contentParagraphs = formatarTexto(content, 'artigo').map(paragrafo => capitalizarFrases(paragrafo));
     
     // Processar URL da imagem
     let imagePath = null;
@@ -1937,8 +2077,8 @@ app.post('/admin/religiao/novo', isAuthenticated, async (req, res) => {
     // Criar novo ID
     const newId = Math.max(...sampleData.religiao.map(a => a.id)) + 1;
     
-    // Processar conteúdo (preservar parágrafos e quebras de linha)
-    const contentParagraphs = content.split('\n\n').map(para => para.trim()).filter(para => para !== '');
+    // Processar conteúdo do artigo com formatação melhorada
+    const contentParagraphs = formatarTexto(content, 'artigo').map(paragrafo => capitalizarFrases(paragrafo));
     
     // Processar URL da imagem
     let imagePath = null;
@@ -2027,9 +2167,13 @@ app.get('/admin/poemas/editar/:id', isAuthenticated, (req, res) => {
                     <label for="content" class="admin-form-label">Conteúdo</label>
                     <textarea id="content" name="content" class="admin-form-textarea" 
                               placeholder="Digite o poema (uma estrofe por linha, linha vazia para separar estrofes)" 
-                              rows="25" required>${poema.content.join('\\n')}</textarea>
+                              rows="25" spellcheck="true" lang="pt-BR" required>${poema.content.join('\\n')}</textarea>
                     <small style="color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-top: 8px; display: block;">
-                        Dica: Use quebras de linha para separar versos e linhas vazias para separar estrofes
+                        💡 <strong>Dicas de formatação:</strong><br>
+                        • Use uma linha para cada verso<br>
+                        • Deixe linhas vazias para separar estrofes<br>
+                        • O sistema corrige automaticamente maiúsculas e minúsculas<br>
+                        • Verificação ortográfica está ativada
                     </small>
                 </div>
                 
@@ -2111,9 +2255,13 @@ app.get('/admin/filosofia/editar/:id', isAuthenticated, (req, res) => {
                     <label for="content" class="admin-form-label">Conteúdo</label>
                     <textarea id="content" name="content" class="admin-form-textarea" 
                               placeholder="Digite o conteúdo do artigo (um parágrafo por linha)" 
-                              rows="30" required>${artigo.content.join('\\n\\n')}</textarea>
+                              rows="30" spellcheck="true" lang="pt-BR" required>${artigo.content.join('\\n\\n')}</textarea>
                     <small style="color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-top: 8px; display: block;">
-                        Dica: Use quebras de linha duplas para separar parágrafos
+                        💡 <strong>Dicas de formatação:</strong><br>
+                        • Use linhas duplas vazias para separar parágrafos<br>
+                        • Cada parágrafo será bem estruturado automaticamente<br>
+                        • Texto justificado e com identação adequada<br>
+                        • Correção automática de maiúsculas e verificação ortográfica ativa
                     </small>
                 </div>
                 
@@ -2195,9 +2343,13 @@ app.get('/admin/religiao/editar/:id', isAuthenticated, (req, res) => {
                     <label for="content" class="admin-form-label">Conteúdo</label>
                     <textarea id="content" name="content" class="admin-form-textarea" 
                               placeholder="Digite o conteúdo do artigo (um parágrafo por linha)" 
-                              rows="30" required>${artigo.content.join('\\n\\n')}</textarea>
+                              rows="30" spellcheck="true" lang="pt-BR" required>${artigo.content.join('\\n\\n')}</textarea>
                     <small style="color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-top: 8px; display: block;">
-                        Dica: Use quebras de linha duplas para separar parágrafos
+                        💡 <strong>Dicas de formatação:</strong><br>
+                        • Use linhas duplas vazias para separar parágrafos<br>
+                        • Cada parágrafo será bem estruturado automaticamente<br>
+                        • Texto justificado e com identação adequada<br>
+                        • Correção automática de maiúsculas e verificação ortográfica ativa
                     </small>
                 </div>
                 
@@ -2284,8 +2436,8 @@ app.post('/admin/poemas/editar/:id', isAuthenticated, async (req, res) => {
       return res.status(404).send('Poema não encontrado');
     }
     
-    // Processar conteúdo (preservar estrutura do poema incluindo linhas longas)
-    const contentLines = content.split('\n').map(line => line.trim());
+    // Processar conteúdo do poema com formatação melhorada
+    const contentLines = formatarTexto(content, 'poema').map(linha => capitalizarFrases(linha));
     
     // Processar URL da imagem
     let imagePath = null;
