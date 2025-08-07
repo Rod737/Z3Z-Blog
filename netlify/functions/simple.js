@@ -1,12 +1,22 @@
 const serverless = require("serverless-http");
 const express = require('express');
 const path = require('path');
+const bcrypt = require('bcryptjs');
+const session = require('express-session');
 
 const app = express();
 
 // Middlewares básicos
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Configuração de sessão para admin
+app.use(session({
+    secret: 'z3z-blog-secret-key-netlify-2025',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: false, maxAge: 24 * 60 * 60 * 1000 } // 24 horas
+}));
 
 // Arquivos estáticos serão servidos diretamente pelo Netlify via publish directory
 
@@ -151,6 +161,88 @@ const sampleData = {
       author: "Admin"
     }
   ]
+};
+
+// Dados de admin (senha: admin123)
+const adminData = {
+  username: 'admin',
+  password: '$2a$10$8K1p/a0dClOVRnH6n0B3/.Cq8RqzUQf8nUV4D1OEZhV6j8B3/.Co.' // bcrypt hash of 'admin123'
+};
+
+// Middleware de autenticação
+const isAuthenticated = (req, res, next) => {
+  if (req.session && req.session.admin) {
+    return next();
+  } else {
+    return res.redirect('/admin/login');
+  }
+};
+
+// Template HTML para admin
+const getAdminHTML = (title, content, currentPage = '') => {
+  return `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${title}</title>
+    <link rel="stylesheet" href="/css/admin-premium.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Oswald:wght@400;600;700&family=Roboto+Slab:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+</head>
+<body>
+    <div class="admin-container">
+        <nav class="admin-sidebar">
+            <div class="admin-logo">
+                <img src="/images/image.png" alt="Z3Z Logo" class="admin-logo-img">
+                <h2 class="z3z-logo z3z-text">Z<span class="z3z-number">3</span>Z</h2>
+                <span class="admin-subtitle">Painel Admin</span>
+            </div>
+            
+            <ul class="admin-nav">
+                <li><a href="/admin" class="admin-nav-link ${currentPage === 'dashboard' ? 'active' : ''}">
+                    <i data-lucide="layout-dashboard" style="width: 20px; height: 20px;"></i>
+                    Dashboard
+                </a></li>
+                <li><a href="/admin/poemas" class="admin-nav-link ${currentPage === 'poemas' ? 'active' : ''}">
+                    <i data-lucide="feather" style="width: 20px; height: 20px;"></i>
+                    Poemas
+                </a></li>
+                <li><a href="/admin/filosofia" class="admin-nav-link ${currentPage === 'filosofia' ? 'active' : ''}">
+                    <i data-lucide="brain" style="width: 20px; height: 20px;"></i>
+                    Filosofia
+                </a></li>
+                <li><a href="/admin/religiao" class="admin-nav-link ${currentPage === 'religiao' ? 'active' : ''}">
+                    <i data-lucide="cross" style="width: 20px; height: 20px;"></i>
+                    Religião
+                </a></li>
+                <li><a href="/admin/logout" class="admin-nav-link">
+                    <i data-lucide="log-out" style="width: 20px; height: 20px;"></i>
+                    Sair
+                </a></li>
+            </ul>
+        </nav>
+        
+        <main class="admin-main">
+            <header class="admin-header">
+                <h1 class="admin-page-title">${title}</h1>
+            </header>
+            
+            <div class="admin-content">
+                ${content}
+            </div>
+        </main>
+    </div>
+    
+    <script src="/js/admin.js"></script>
+    <script>
+        // Inicializar ícones Lucide
+        lucide.createIcons();
+    </script>
+</body>
+</html>`;
 };
 
 // Rota principal
@@ -443,6 +535,302 @@ app.get('/religiao/:id', (req, res) => {
 
   const html = getBaseHTML(`${artigo.title} - Z3Z Blog`, content, 'religiao');
   res.send(html);
+});
+
+// ===== ROTAS ADMINISTRATIVAS =====
+
+// Login admin
+app.get('/admin/login', (req, res) => {
+  const content = `
+    <!DOCTYPE html>
+    <html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Login - Z3Z Admin</title>
+        <link rel="stylesheet" href="/css/admin-premium.css">
+        <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    </head>
+    <body>
+        <div class="login-container">
+            <div class="login-card">
+                <div class="login-header">
+                    <img src="/images/image.png" alt="Z3Z Logo" class="login-logo">
+                    <h1 class="login-title">Z<span class="z3z-number">3</span>Z Admin</h1>
+                    <p class="login-subtitle">Sistema de Gestão</p>
+                </div>
+                
+                <form method="POST" action="/admin/login" class="login-form">
+                    <div class="form-group">
+                        <label for="username" class="form-label">
+                            <i data-lucide="user" style="width: 16px; height: 16px; margin-right: 8px;"></i>
+                            Usuário
+                        </label>
+                        <div style="position: relative;">
+                            <i data-lucide="user" class="form-icon" style="width: 20px; height: 20px;"></i>
+                            <input type="text" id="username" name="username" class="form-input" 
+                                   placeholder="Digite seu usuário" required autofocus>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password" class="form-label">
+                            <i data-lucide="lock" style="width: 16px; height: 16px; margin-right: 8px;"></i>
+                            Senha
+                        </label>
+                        <div style="position: relative;">
+                            <i data-lucide="lock" class="form-icon" style="width: 20px; height: 20px;"></i>
+                            <input type="password" id="password" name="password" class="form-input" 
+                                   placeholder="Digite sua senha" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="login-button">
+                        <i data-lucide="log-in" style="width: 20px; height: 20px; margin-right: 10px;"></i>
+                        Entrar no Sistema
+                    </button>
+                </form>
+
+                <div class="login-footer">
+                    <a href="/" class="back-link">
+                        <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i>
+                        Voltar ao Site
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <script>
+            lucide.createIcons();
+        </script>
+    </body>
+    </html>
+  `;
+  
+  res.send(content);
+});
+
+// POST login admin
+app.post('/admin/login', async (req, res) => {
+  const { username, password } = req.body;
+  
+  if (username === adminData.username && await bcrypt.compare(password, adminData.password)) {
+    req.session.admin = true;
+    res.redirect('/admin');
+  } else {
+    res.redirect('/admin/login?error=1');
+  }
+});
+
+// Dashboard admin
+app.get('/admin', isAuthenticated, (req, res) => {
+  const content = `
+    <div class="admin-stats-grid">
+        <div class="admin-stat-card">
+            <div class="stat-icon">
+                <i data-lucide="feather" style="width: 40px; height: 40px; color: var(--admin-accent);"></i>
+            </div>
+            <div class="stat-content">
+                <h3>${sampleData.poemas.length}</h3>
+                <p>Poemas</p>
+            </div>
+        </div>
+        
+        <div class="admin-stat-card">
+            <div class="stat-icon">
+                <i data-lucide="brain" style="width: 40px; height: 40px; color: var(--admin-accent);"></i>
+            </div>
+            <div class="stat-content">
+                <h3>${sampleData.filosofia.length}</h3>
+                <p>Filosofia</p>
+            </div>
+        </div>
+        
+        <div class="admin-stat-card">
+            <div class="stat-icon">
+                <i data-lucide="cross" style="width: 40px; height: 40px; color: var(--admin-accent);"></i>
+            </div>
+            <div class="stat-content">
+                <h3>${sampleData.religiao.length}</h3>
+                <p>Religião</p>
+            </div>
+        </div>
+        
+        <div class="admin-stat-card">
+            <div class="stat-icon">
+                <i data-lucide="eye" style="width: 40px; height: 40px; color: var(--admin-accent);"></i>
+            </div>
+            <div class="stat-content">
+                <h3>∞</h3>
+                <p>Visualizações</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="admin-quick-actions">
+        <h2>Ações Rápidas</h2>
+        <div class="quick-actions-grid">
+            <a href="/admin/poemas/novo" class="quick-action-btn">
+                <i data-lucide="plus" style="width: 24px; height: 24px;"></i>
+                Novo Poema
+            </a>
+            <a href="/admin/filosofia/novo" class="quick-action-btn">
+                <i data-lucide="plus" style="width: 24px; height: 24px;"></i>
+                Nova Filosofia
+            </a>
+            <a href="/admin/religiao/novo" class="quick-action-btn">
+                <i data-lucide="plus" style="width: 24px; height: 24px;"></i>
+                Nova Religião
+            </a>
+            <a href="/" target="_blank" class="quick-action-btn">
+                <i data-lucide="external-link" style="width: 24px; height: 24px;"></i>
+                Ver Site
+            </a>
+        </div>
+    </div>
+  `;
+  
+  const html = getAdminHTML('Dashboard - Z3Z Admin', content, 'dashboard');
+  res.send(html);
+});
+
+// Listas admin
+app.get('/admin/poemas', isAuthenticated, (req, res) => {
+  const content = `
+    <div class="admin-header-actions">
+        <a href="/admin/poemas/novo" class="admin-btn admin-btn-primary">
+            <i data-lucide="plus" style="width: 16px; height: 16px; margin-right: 8px;"></i>
+            Novo Poema
+        </a>
+    </div>
+    
+    <div class="admin-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Título</th>
+                    <th>Categoria</th>
+                    <th>Data</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${sampleData.poemas.map(poema => `
+                    <tr>
+                        <td><strong>${poema.title}</strong></td>
+                        <td><span class="admin-category ${poema.category}">${poema.category}</span></td>
+                        <td>${poema.date}</td>
+                        <td><span class="admin-status ${poema.published ? 'published' : 'draft'}">${poema.published ? 'Publicado' : 'Rascunho'}</span></td>
+                        <td>
+                            <a href="/poemas/${poema.id}" class="admin-btn admin-btn-small" target="_blank">
+                                <i data-lucide="eye" style="width: 14px; height: 14px;"></i>
+                                Ver
+                            </a>
+                        </td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        </table>
+    </div>
+  `;
+  
+  const html = getAdminHTML('Poemas - Z3Z Admin', content, 'poemas');
+  res.send(html);
+});
+
+app.get('/admin/filosofia', isAuthenticated, (req, res) => {
+  const content = `
+    <div class="admin-header-actions">
+        <a href="/admin/filosofia/novo" class="admin-btn admin-btn-primary">
+            <i data-lucide="plus" style="width: 16px; height: 16px; margin-right: 8px;"></i>
+            Nova Reflexão
+        </a>
+    </div>
+    
+    <div class="admin-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Título</th>
+                    <th>Categoria</th>
+                    <th>Data</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${sampleData.filosofia.map(artigo => `
+                    <tr>
+                        <td><strong>${artigo.title}</strong></td>
+                        <td><span class="admin-category ${artigo.category}">${artigo.category}</span></td>
+                        <td>${artigo.date}</td>
+                        <td><span class="admin-status ${artigo.published ? 'published' : 'draft'}">${artigo.published ? 'Publicado' : 'Rascunho'}</span></td>
+                        <td>
+                            <a href="/filosofia/${artigo.id}" class="admin-btn admin-btn-small" target="_blank">
+                                <i data-lucide="eye" style="width: 14px; height: 14px;"></i>
+                                Ver
+                            </a>
+                        </td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        </table>
+    </div>
+  `;
+  
+  const html = getAdminHTML('Filosofia - Z3Z Admin', content, 'filosofia');
+  res.send(html);
+});
+
+app.get('/admin/religiao', isAuthenticated, (req, res) => {
+  const content = `
+    <div class="admin-header-actions">
+        <a href="/admin/religiao/novo" class="admin-btn admin-btn-primary">
+            <i data-lucide="plus" style="width: 16px; height: 16px; margin-right: 8px;"></i>
+            Novo Artigo
+        </a>
+    </div>
+    
+    <div class="admin-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Título</th>
+                    <th>Categoria</th>
+                    <th>Data</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${sampleData.religiao.map(artigo => `
+                    <tr>
+                        <td><strong>${artigo.title}</strong></td>
+                        <td><span class="admin-category ${artigo.category}">${artigo.category}</span></td>
+                        <td>${artigo.date}</td>
+                        <td><span class="admin-status ${artigo.published ? 'published' : 'draft'}">${artigo.published ? 'Publicado' : 'Rascunho'}</span></td>
+                        <td>
+                            <a href="/religiao/${artigo.id}" class="admin-btn admin-btn-small" target="_blank">
+                                <i data-lucide="eye" style="width: 14px; height: 14px;"></i>
+                                Ver
+                            </a>
+                        </td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        </table>
+    </div>
+  `;
+  
+  const html = getAdminHTML('Religião - Z3Z Admin', content, 'religiao');
+  res.send(html);
+});
+
+// Logout admin
+app.get('/admin/logout', (req, res) => {
+  req.session.destroy();
+  res.redirect('/admin/login');
 });
 
 // 404
