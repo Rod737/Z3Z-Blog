@@ -3,13 +3,53 @@ const express = require('express');
 const path = require('path');
 const bcrypt = require('bcryptjs');
 const session = require('express-session');
-// const multer = require('multer');
-// const fs = require('fs');
+const multer = require('multer');
+const cloudinary = require('cloudinary').v2;
 
 const app = express();
 
-// Upload de imagens desabilitado no ambiente serverless Netlify
-// Netlify Functions não suportam upload de arquivos para sistema local
+// Configuração do Cloudinary (usando conta demo - substitua pelas suas credenciais)
+cloudinary.config({
+  cloud_name: 'demo',
+  api_key: '123456789012345', 
+  api_secret: 'abcdefghijklmnopqrstuvwxyz12',
+  secure: true
+});
+
+// Configuração do multer para usar memória (compatível com serverless)
+const upload = multer({ 
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 5 * 1024 * 1024 // 5MB
+  },
+  fileFilter: function (req, file, cb) {
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Apenas imagens são permitidas!'));
+    }
+  }
+});
+
+// Função para upload no Cloudinary
+async function uploadToCloudinary(buffer, filename) {
+  return new Promise((resolve, reject) => {
+    cloudinary.uploader.upload_stream(
+      {
+        resource_type: 'auto',
+        folder: 'z3z-blog',
+        public_id: `article-${Date.now()}`
+      },
+      (error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result.secure_url);
+        }
+      }
+    ).end(buffer);
+  });
+}
 
 // Middlewares básicos
 app.use(express.json());
@@ -1500,18 +1540,23 @@ app.get('/admin/poemas/novo', isAuthenticated, (req, res) => {
         </div>
         
         <div class="admin-card-body">
-            <form method="POST" action="/admin/poemas/novo" class="admin-form">
+            <form method="POST" action="/admin/poemas/novo" enctype="multipart/form-data" class="admin-form">
                 <div class="admin-form-group">
                     <label for="title" class="admin-form-label">Título do Poema</label>
                     <input type="text" id="title" name="title" class="admin-form-input" 
                            placeholder="Digite o título do poema" required>
                 </div>
                 
-                <!-- Upload de imagens temporariamente desabilitado no ambiente Netlify serverless -->
-                <div style="background: rgba(255, 179, 0, 0.1); padding: 15px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid var(--admin-accent);">
-                    <p style="color: rgba(255,255,255,0.8); font-size: 0.9rem; margin: 0;">
-                        ⚠️ Upload de imagens temporariamente indisponível no ambiente serverless.
-                    </p>
+                <div class="admin-form-group">
+                    <label for="image" class="admin-form-label">
+                        <i data-lucide="image" style="width: 16px; height: 16px; margin-right: 8px;"></i>
+                        Imagem do Poema (Opcional)
+                    </label>
+                    <input type="file" id="image" name="image" class="admin-form-input" 
+                           accept="image/*" style="padding: 10px;">
+                    <small style="color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-top: 8px; display: block;">
+                        ✨ Upload via Cloudinary. Formatos: JPG, PNG, GIF. Máximo: 5MB
+                    </small>
                 </div>
                 
                 <div class="admin-form-group">
@@ -1562,18 +1607,23 @@ app.get('/admin/filosofia/novo', isAuthenticated, (req, res) => {
         </div>
         
         <div class="admin-card-body">
-            <form method="POST" action="/admin/filosofia/novo" class="admin-form">
+            <form method="POST" action="/admin/filosofia/novo" enctype="multipart/form-data" class="admin-form">
                 <div class="admin-form-group">
                     <label for="title" class="admin-form-label">Título do Artigo</label>
                     <input type="text" id="title" name="title" class="admin-form-input" 
                            placeholder="Digite o título do artigo" required>
                 </div>
                 
-                <!-- Upload de imagens temporariamente desabilitado no ambiente Netlify serverless -->
-                <div style="background: rgba(255, 179, 0, 0.1); padding: 15px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid var(--admin-accent);">
-                    <p style="color: rgba(255,255,255,0.8); font-size: 0.9rem; margin: 0;">
-                        ⚠️ Upload de imagens temporariamente indisponível no ambiente serverless.
-                    </p>
+                <div class="admin-form-group">
+                    <label for="image" class="admin-form-label">
+                        <i data-lucide="image" style="width: 16px; height: 16px; margin-right: 8px;"></i>
+                        Imagem do Artigo (Opcional)
+                    </label>
+                    <input type="file" id="image" name="image" class="admin-form-input" 
+                           accept="image/*" style="padding: 10px;">
+                    <small style="color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-top: 8px; display: block;">
+                        ✨ Upload via Cloudinary. Formatos: JPG, PNG, GIF. Máximo: 5MB
+                    </small>
                 </div>
                 
                 <div class="admin-form-group">
@@ -1636,18 +1686,23 @@ app.get('/admin/religiao/novo', isAuthenticated, (req, res) => {
         </div>
         
         <div class="admin-card-body">
-            <form method="POST" action="/admin/religiao/novo" class="admin-form">
+            <form method="POST" action="/admin/religiao/novo" enctype="multipart/form-data" class="admin-form">
                 <div class="admin-form-group">
                     <label for="title" class="admin-form-label">Título do Artigo</label>
                     <input type="text" id="title" name="title" class="admin-form-input" 
                            placeholder="Digite o título do artigo" required>
                 </div>
                 
-                <!-- Upload de imagens temporariamente desabilitado no ambiente Netlify serverless -->
-                <div style="background: rgba(255, 179, 0, 0.1); padding: 15px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid var(--admin-accent);">
-                    <p style="color: rgba(255,255,255,0.8); font-size: 0.9rem; margin: 0;">
-                        ⚠️ Upload de imagens temporariamente indisponível no ambiente serverless.
-                    </p>
+                <div class="admin-form-group">
+                    <label for="image" class="admin-form-label">
+                        <i data-lucide="image" style="width: 16px; height: 16px; margin-right: 8px;"></i>
+                        Imagem do Artigo (Opcional)
+                    </label>
+                    <input type="file" id="image" name="image" class="admin-form-input" 
+                           accept="image/*" style="padding: 10px;">
+                    <small style="color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-top: 8px; display: block;">
+                        ✨ Upload via Cloudinary. Formatos: JPG, PNG, GIF. Máximo: 5MB
+                    </small>
                 </div>
                 
                 <div class="admin-form-group">
@@ -1691,110 +1746,140 @@ app.get('/admin/religiao/novo', isAuthenticated, (req, res) => {
   res.send(html);
 });
 
-// Rotas POST para salvar novos artigos (sem upload de imagens)
-app.post('/admin/poemas/novo', isAuthenticated, (req, res) => {
-  const { title, content, date } = req.body;
-  
-  // Criar novo ID
-  const newId = Math.max(...sampleData.poemas.map(p => p.id)) + 1;
-  
-  // Processar conteúdo (quebrar em linhas)
-  const contentLines = content.split('\n').filter(line => line.trim() !== '');
-  
-  // Processar imagem se foi enviada (desabilitado no Netlify)
-  let imagePath = null;
-  // if (req.file) {
-  //   imagePath = `/images/uploads/${req.file.filename}`;
-  // }
-  
-  // Criar novo poema
-  const newPoema = {
-    id: newId,
-    title: title.trim(),
-    content: contentLines,
-    date: date,
-    excerpt: contentLines[0] || '',
-    image: imagePath,
-    category: "existencial",
-    tags: ["poesia"],
-    published: true,
-    author: "Admin"
-  };
-  
-  // Adicionar aos dados
-  sampleData.poemas.unshift(newPoema);
-  
-  res.redirect('/admin/poemas');
+// Rotas POST para salvar novos artigos (com upload de imagens no Cloudinary)
+app.post('/admin/poemas/novo', isAuthenticated, upload.single('image'), async (req, res) => {
+  try {
+    const { title, content, date } = req.body;
+    
+    // Criar novo ID
+    const newId = Math.max(...sampleData.poemas.map(p => p.id)) + 1;
+    
+    // Processar conteúdo (quebrar em linhas)
+    const contentLines = content.split('\n').filter(line => line.trim() !== '');
+    
+    // Processar imagem se foi enviada
+    let imagePath = null;
+    if (req.file) {
+      try {
+        imagePath = await uploadToCloudinary(req.file.buffer, req.file.originalname);
+      } catch (uploadError) {
+        console.error('Erro no upload:', uploadError);
+        // Continuar sem imagem se o upload falhar
+      }
+    }
+    
+    // Criar novo poema
+    const newPoema = {
+      id: newId,
+      title: title.trim(),
+      content: contentLines,
+      date: date,
+      excerpt: contentLines[0] || '',
+      image: imagePath,
+      category: "existencial",
+      tags: ["poesia"],
+      published: true,
+      author: "Admin"
+    };
+    
+    // Adicionar aos dados
+    sampleData.poemas.unshift(newPoema);
+    
+    res.redirect('/admin/poemas');
+  } catch (error) {
+    console.error('Erro ao criar poema:', error);
+    res.status(500).send('Erro interno do servidor');
+  }
 });
 
-app.post('/admin/filosofia/novo', isAuthenticated, (req, res) => {
-  const { title, content, category, date } = req.body;
-  
-  // Criar novo ID
-  const newId = Math.max(...sampleData.filosofia.map(a => a.id)) + 1;
-  
-  // Processar conteúdo (quebrar em parágrafos)
-  const contentParagraphs = content.split('\n').filter(line => line.trim() !== '');
-  
-  // Processar imagem se foi enviada (desabilitado no Netlify)
-  let imagePath = null;
-  // if (req.file) {
-  //   imagePath = `/images/uploads/${req.file.filename}`;
-  // }
-  
-  // Criar novo artigo
-  const newArtigo = {
-    id: newId,
-    title: title.trim(),
-    content: contentParagraphs,
-    category: category,
-    date: date,
-    excerpt: contentParagraphs[0] ? contentParagraphs[0].substring(0, 150) + '...' : '',
-    image: imagePath,
-    tags: ["filosofia"],
-    published: true,
-    author: "Admin"
-  };
-  
-  // Adicionar aos dados
-  sampleData.filosofia.unshift(newArtigo);
-  
-  res.redirect('/admin/filosofia');
+app.post('/admin/filosofia/novo', isAuthenticated, upload.single('image'), async (req, res) => {
+  try {
+    const { title, content, category, date } = req.body;
+    
+    // Criar novo ID
+    const newId = Math.max(...sampleData.filosofia.map(a => a.id)) + 1;
+    
+    // Processar conteúdo (quebrar em parágrafos)
+    const contentParagraphs = content.split('\n').filter(line => line.trim() !== '');
+    
+    // Processar imagem se foi enviada
+    let imagePath = null;
+    if (req.file) {
+      try {
+        imagePath = await uploadToCloudinary(req.file.buffer, req.file.originalname);
+      } catch (uploadError) {
+        console.error('Erro no upload:', uploadError);
+        // Continuar sem imagem se o upload falhar
+      }
+    }
+    
+    // Criar novo artigo
+    const newArtigo = {
+      id: newId,
+      title: title.trim(),
+      content: contentParagraphs,
+      category: category,
+      date: date,
+      excerpt: contentParagraphs[0] ? contentParagraphs[0].substring(0, 150) + '...' : '',
+      image: imagePath,
+      tags: ["filosofia"],
+      published: true,
+      author: "Admin"
+    };
+    
+    // Adicionar aos dados
+    sampleData.filosofia.unshift(newArtigo);
+    
+    res.redirect('/admin/filosofia');
+  } catch (error) {
+    console.error('Erro ao criar artigo de filosofia:', error);
+    res.status(500).send('Erro interno do servidor');
+  }
 });
 
-app.post('/admin/religiao/novo', isAuthenticated, (req, res) => {
-  const { title, content, category, date } = req.body;
-  
-  // Criar novo ID
-  const newId = Math.max(...sampleData.religiao.map(a => a.id)) + 1;
-  
-  // Processar conteúdo (quebrar em parágrafos)
-  const contentParagraphs = content.split('\n').filter(line => line.trim() !== '');
-  
-  // Processar imagem se foi enviada (desabilitado no Netlify)
-  let imagePath = null;
-  // if (req.file) {
-  //   imagePath = `/images/uploads/${req.file.filename}`;
-  // }
-  
-  // Criar novo artigo
-  const newArtigo = {
-    id: newId,
-    title: title.trim(),
-    content: contentParagraphs,
-    category: category,
-    date: date,
-    excerpt: contentParagraphs[0] ? contentParagraphs[0].substring(0, 150) + '...' : '',
-    image: imagePath,
-    tags: ["religião"],
-    published: true,
-    author: "Admin"
-  };
-  
-  // Adicionar aos dados
-  sampleData.religiao.unshift(newArtigo);
-  
-  res.redirect('/admin/religiao');
+app.post('/admin/religiao/novo', isAuthenticated, upload.single('image'), async (req, res) => {
+  try {
+    const { title, content, category, date } = req.body;
+    
+    // Criar novo ID
+    const newId = Math.max(...sampleData.religiao.map(a => a.id)) + 1;
+    
+    // Processar conteúdo (quebrar em parágrafos)
+    const contentParagraphs = content.split('\n').filter(line => line.trim() !== '');
+    
+    // Processar imagem se foi enviada
+    let imagePath = null;
+    if (req.file) {
+      try {
+        imagePath = await uploadToCloudinary(req.file.buffer, req.file.originalname);
+      } catch (uploadError) {
+        console.error('Erro no upload:', uploadError);
+        // Continuar sem imagem se o upload falhar
+      }
+    }
+    
+    // Criar novo artigo
+    const newArtigo = {
+      id: newId,
+      title: title.trim(),
+      content: contentParagraphs,
+      category: category,
+      date: date,
+      excerpt: contentParagraphs[0] ? contentParagraphs[0].substring(0, 150) + '...' : '',
+      image: imagePath,
+      tags: ["religião"],
+      published: true,
+      author: "Admin"
+    };
+    
+    // Adicionar aos dados
+    sampleData.religiao.unshift(newArtigo);
+    
+    res.redirect('/admin/religiao');
+  } catch (error) {
+    console.error('Erro ao criar artigo de religião:', error);
+    res.status(500).send('Erro interno do servidor');
+  }
 });
 
 // Logout admin
