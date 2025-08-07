@@ -3,39 +3,13 @@ const express = require('express');
 const path = require('path');
 const bcrypt = require('bcryptjs');
 const session = require('express-session');
-const multer = require('multer');
-const fs = require('fs');
+// const multer = require('multer');
+// const fs = require('fs');
 
 const app = express();
 
-// Configuração do multer para upload de imagens
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    const uploadPath = path.join(__dirname, '../../public/images/uploads');
-    if (!fs.existsSync(uploadPath)) {
-      fs.mkdirSync(uploadPath, { recursive: true });
-    }
-    cb(null, uploadPath);
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
-  }
-});
-
-const upload = multer({ 
-  storage: storage,
-  limits: {
-    fileSize: 5 * 1024 * 1024 // 5MB limite
-  },
-  fileFilter: function (req, file, cb) {
-    if (file.mimetype.startsWith('image/')) {
-      cb(null, true);
-    } else {
-      cb(new Error('Apenas imagens são permitidas!'));
-    }
-  }
-});
+// Upload de imagens desabilitado no ambiente serverless Netlify
+// Netlify Functions não suportam upload de arquivos para sistema local
 
 // Middlewares básicos
 app.use(express.json());
@@ -1526,23 +1500,18 @@ app.get('/admin/poemas/novo', isAuthenticated, (req, res) => {
         </div>
         
         <div class="admin-card-body">
-            <form method="POST" action="/admin/poemas/novo" enctype="multipart/form-data" class="admin-form">
+            <form method="POST" action="/admin/poemas/novo" class="admin-form">
                 <div class="admin-form-group">
                     <label for="title" class="admin-form-label">Título do Poema</label>
                     <input type="text" id="title" name="title" class="admin-form-input" 
                            placeholder="Digite o título do poema" required>
                 </div>
                 
-                <div class="admin-form-group">
-                    <label for="image" class="admin-form-label">
-                        <i data-lucide="image" style="width: 16px; height: 16px; margin-right: 8px;"></i>
-                        Imagem do Poema (Opcional)
-                    </label>
-                    <input type="file" id="image" name="image" class="admin-form-input" 
-                           accept="image/*" style="padding: 10px;">
-                    <small style="color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-top: 8px; display: block;">
-                        Formatos aceitos: JPG, PNG, GIF. Tamanho máximo: 5MB
-                    </small>
+                <!-- Upload de imagens temporariamente desabilitado no ambiente Netlify serverless -->
+                <div style="background: rgba(255, 179, 0, 0.1); padding: 15px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid var(--admin-accent);">
+                    <p style="color: rgba(255,255,255,0.8); font-size: 0.9rem; margin: 0;">
+                        ⚠️ Upload de imagens temporariamente indisponível no ambiente serverless.
+                    </p>
                 </div>
                 
                 <div class="admin-form-group">
@@ -1593,23 +1562,18 @@ app.get('/admin/filosofia/novo', isAuthenticated, (req, res) => {
         </div>
         
         <div class="admin-card-body">
-            <form method="POST" action="/admin/filosofia/novo" enctype="multipart/form-data" class="admin-form">
+            <form method="POST" action="/admin/filosofia/novo" class="admin-form">
                 <div class="admin-form-group">
                     <label for="title" class="admin-form-label">Título do Artigo</label>
                     <input type="text" id="title" name="title" class="admin-form-input" 
                            placeholder="Digite o título do artigo" required>
                 </div>
                 
-                <div class="admin-form-group">
-                    <label for="image" class="admin-form-label">
-                        <i data-lucide="image" style="width: 16px; height: 16px; margin-right: 8px;"></i>
-                        Imagem do Artigo (Opcional)
-                    </label>
-                    <input type="file" id="image" name="image" class="admin-form-input" 
-                           accept="image/*" style="padding: 10px;">
-                    <small style="color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-top: 8px; display: block;">
-                        Formatos aceitos: JPG, PNG, GIF. Tamanho máximo: 5MB
-                    </small>
+                <!-- Upload de imagens temporariamente desabilitado no ambiente Netlify serverless -->
+                <div style="background: rgba(255, 179, 0, 0.1); padding: 15px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid var(--admin-accent);">
+                    <p style="color: rgba(255,255,255,0.8); font-size: 0.9rem; margin: 0;">
+                        ⚠️ Upload de imagens temporariamente indisponível no ambiente serverless.
+                    </p>
                 </div>
                 
                 <div class="admin-form-group">
@@ -1672,23 +1636,18 @@ app.get('/admin/religiao/novo', isAuthenticated, (req, res) => {
         </div>
         
         <div class="admin-card-body">
-            <form method="POST" action="/admin/religiao/novo" enctype="multipart/form-data" class="admin-form">
+            <form method="POST" action="/admin/religiao/novo" class="admin-form">
                 <div class="admin-form-group">
                     <label for="title" class="admin-form-label">Título do Artigo</label>
                     <input type="text" id="title" name="title" class="admin-form-input" 
                            placeholder="Digite o título do artigo" required>
                 </div>
                 
-                <div class="admin-form-group">
-                    <label for="image" class="admin-form-label">
-                        <i data-lucide="image" style="width: 16px; height: 16px; margin-right: 8px;"></i>
-                        Imagem do Artigo (Opcional)
-                    </label>
-                    <input type="file" id="image" name="image" class="admin-form-input" 
-                           accept="image/*" style="padding: 10px;">
-                    <small style="color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-top: 8px; display: block;">
-                        Formatos aceitos: JPG, PNG, GIF. Tamanho máximo: 5MB
-                    </small>
+                <!-- Upload de imagens temporariamente desabilitado no ambiente Netlify serverless -->
+                <div style="background: rgba(255, 179, 0, 0.1); padding: 15px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid var(--admin-accent);">
+                    <p style="color: rgba(255,255,255,0.8); font-size: 0.9rem; margin: 0;">
+                        ⚠️ Upload de imagens temporariamente indisponível no ambiente serverless.
+                    </p>
                 </div>
                 
                 <div class="admin-form-group">
@@ -1732,8 +1691,8 @@ app.get('/admin/religiao/novo', isAuthenticated, (req, res) => {
   res.send(html);
 });
 
-// Rotas POST para salvar novos artigos
-app.post('/admin/poemas/novo', isAuthenticated, upload.single('image'), (req, res) => {
+// Rotas POST para salvar novos artigos (sem upload de imagens)
+app.post('/admin/poemas/novo', isAuthenticated, (req, res) => {
   const { title, content, date } = req.body;
   
   // Criar novo ID
@@ -1742,11 +1701,11 @@ app.post('/admin/poemas/novo', isAuthenticated, upload.single('image'), (req, re
   // Processar conteúdo (quebrar em linhas)
   const contentLines = content.split('\n').filter(line => line.trim() !== '');
   
-  // Processar imagem se foi enviada
+  // Processar imagem se foi enviada (desabilitado no Netlify)
   let imagePath = null;
-  if (req.file) {
-    imagePath = `/images/uploads/${req.file.filename}`;
-  }
+  // if (req.file) {
+  //   imagePath = `/images/uploads/${req.file.filename}`;
+  // }
   
   // Criar novo poema
   const newPoema = {
@@ -1768,7 +1727,7 @@ app.post('/admin/poemas/novo', isAuthenticated, upload.single('image'), (req, re
   res.redirect('/admin/poemas');
 });
 
-app.post('/admin/filosofia/novo', isAuthenticated, upload.single('image'), (req, res) => {
+app.post('/admin/filosofia/novo', isAuthenticated, (req, res) => {
   const { title, content, category, date } = req.body;
   
   // Criar novo ID
@@ -1777,11 +1736,11 @@ app.post('/admin/filosofia/novo', isAuthenticated, upload.single('image'), (req,
   // Processar conteúdo (quebrar em parágrafos)
   const contentParagraphs = content.split('\n').filter(line => line.trim() !== '');
   
-  // Processar imagem se foi enviada
+  // Processar imagem se foi enviada (desabilitado no Netlify)
   let imagePath = null;
-  if (req.file) {
-    imagePath = `/images/uploads/${req.file.filename}`;
-  }
+  // if (req.file) {
+  //   imagePath = `/images/uploads/${req.file.filename}`;
+  // }
   
   // Criar novo artigo
   const newArtigo = {
@@ -1803,7 +1762,7 @@ app.post('/admin/filosofia/novo', isAuthenticated, upload.single('image'), (req,
   res.redirect('/admin/filosofia');
 });
 
-app.post('/admin/religiao/novo', isAuthenticated, upload.single('image'), (req, res) => {
+app.post('/admin/religiao/novo', isAuthenticated, (req, res) => {
   const { title, content, category, date } = req.body;
   
   // Criar novo ID
@@ -1812,11 +1771,11 @@ app.post('/admin/religiao/novo', isAuthenticated, upload.single('image'), (req, 
   // Processar conteúdo (quebrar em parágrafos)
   const contentParagraphs = content.split('\n').filter(line => line.trim() !== '');
   
-  // Processar imagem se foi enviada
+  // Processar imagem se foi enviada (desabilitado no Netlify)
   let imagePath = null;
-  if (req.file) {
-    imagePath = `/images/uploads/${req.file.filename}`;
-  }
+  // if (req.file) {
+  //   imagePath = `/images/uploads/${req.file.filename}`;
+  // }
   
   // Criar novo artigo
   const newArtigo = {
