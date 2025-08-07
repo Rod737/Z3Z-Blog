@@ -55,30 +55,30 @@ npm start
 
 ## 🌐 Deploy Online
 
-### Opção 1: Render.com (Recomendado para Node.js)
-1. Acesse https://render.com
-2. Conecte o repositório GitHub `Rod737/Z3Z-Blog`
-3. Selecione "Web Service"
-4. Configurações:
+### ⭐ Opção 1: Railway.app (MAIS FÁCIL)
+1. **Acesse:** https://railway.app
+2. **Login com GitHub**
+3. **"New Project"** → **"Deploy from GitHub repo"**
+4. **Selecione:** `Rod737/Z3Z-Blog`
+5. **Deploy automático!** ✅ Zero configuração necessária
+
+### ⭐ Opção 2: Render.com (Também fácil)
+1. **Acesse:** https://render.com
+2. **"New +"** → **"Web Service"**
+3. **Conecte GitHub:** `Rod737/Z3Z-Blog`
+4. **Configurações:**
    - Build Command: `npm install`
    - Start Command: `npm start`
    - Environment: `Node`
-5. Deploy automático e gratuito!
 
-### Opção 2: Railway
-1. Acesse https://railway.app
-2. Conecte GitHub e selecione o repositório
-3. Deploy automático com zero configuração
+### ❌ Netlify (Evitar - muito complexo para Node.js)
+- Netlify é melhor para sites estáticos
+- Para aplicações Node.js completas, use Railway ou Render
 
-### Opção 3: Netlify (com Netlify Functions)
-1. Acesse https://netlify.com
-2. Conecte o repositório GitHub `Rod737/Z3Z-Blog`
-3. Configurações automáticas via `netlify.toml`
-
-### Opção 4: Heroku
-1. Acesse https://heroku.com
-2. Conecte GitHub e faça deploy
-3. Configuração automática via `Procfile`
+### Opção 3: Heroku
+1. **Acesse:** https://heroku.com
+2. **Conecte GitHub** e faça deploy
+3. **Configuração automática** via `Procfile`
 
 ## 🏗️ Estrutura do Projeto
 
