@@ -3,6 +3,7 @@ const express = require('express');
 const path = require('path');
 const bcrypt = require('bcryptjs');
 const session = require('express-session');
+const fs = require('fs');
 // const multer = require('multer');
 // const cloudinary = require('cloudinary').v2;
 
@@ -63,6 +64,24 @@ function capitalizarFrases(texto) {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Rota para servir favicon
+app.get('/favicon.ico', (req, res) => {
+  try {
+    const faviconPath = path.join(process.cwd(), 'favicon.ico');
+    if (fs.existsSync(faviconPath)) {
+      res.setHeader('Content-Type', 'image/x-icon');
+      res.setHeader('Cache-Control', 'public, max-age=86400'); // Cache por 1 dia
+      const favicon = fs.readFileSync(faviconPath);
+      res.send(favicon);
+    } else {
+      res.status(404).send('Favicon not found');
+    }
+  } catch (error) {
+    console.error('Erro ao servir favicon:', error);
+    res.status(500).send('Erro interno do servidor');
+  }
+});
+
 // Configuração de sessão para admin
 app.use(session({
     secret: 'z3z-blog-secret-key-netlify-2025',
@@ -82,6 +101,12 @@ const getBaseHTML = (title, content, currentPage = '') => {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${title}</title>
     <meta name="description" content="Explore a profundidade da alma humana através de poemas, reflexões filosóficas e insights religiosos no Blog Z3Z.">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" href="/favicon.ico">
+    <meta name="msapplication-TileImage" content="/favicon.ico">
     <link rel="stylesheet" href="/css/styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -396,6 +421,12 @@ const getAdminHTML = (title, content, currentPage = '') => {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${title}</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" href="/favicon.ico">
+    <meta name="msapplication-TileImage" content="/favicon.ico">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Oswald:wght@400;600;700&family=Roboto+Slab:wght@400;600;700&display=swap" rel="stylesheet">
@@ -1190,6 +1221,12 @@ app.get('/admin/login', (req, res) => {
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Login - Z3Z Admin</title>
+        
+        <!-- Favicon -->
+        <link rel="icon" type="image/x-icon" href="/favicon.ico">
+        <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+        <link rel="apple-touch-icon" href="/favicon.ico">
+        <meta name="msapplication-TileImage" content="/favicon.ico">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Oswald:wght@400;600;700&family=Roboto+Slab:wght@400;600;700&display=swap" rel="stylesheet">

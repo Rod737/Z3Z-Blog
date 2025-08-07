@@ -26,6 +26,12 @@
   to = "/images/:splat"
   status = 200
 
+# Servir favicon
+[[redirects]]
+  from = "/favicon.ico"
+  to = "/.netlify/functions/simple/favicon.ico"
+  status = 200
+
 # Redirect remaining routes to Netlify function
 [[redirects]]
   from = "/*"
@@ -39,3 +45,10 @@
     X-Frame-Options = "DENY"
     X-XSS-Protection = "1; mode=block"
     X-Content-Type-Options = "nosniff"
+
+# Headers for favicon
+[[headers]]
+  for = "/favicon.ico"
+  [headers.values]
+    Content-Type = "image/x-icon"
+    Cache-Control = "public, max-age=86400"
