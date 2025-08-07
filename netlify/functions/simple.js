@@ -3,8 +3,39 @@ const express = require('express');
 const path = require('path');
 const bcrypt = require('bcryptjs');
 const session = require('express-session');
+const multer = require('multer');
+const fs = require('fs');
 
 const app = express();
+
+// Configuração do multer para upload de imagens
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const uploadPath = path.join(__dirname, '../../public/images/uploads');
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath, { recursive: true });
+    }
+    cb(null, uploadPath);
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+  }
+});
+
+const upload = multer({ 
+  storage: storage,
+  limits: {
+    fileSize: 5 * 1024 * 1024 // 5MB limite
+  },
+  fileFilter: function (req, file, cb) {
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Apenas imagens são permitidas!'));
+    }
+  }
+});
 
 // Middlewares básicos
 app.use(express.json());
@@ -134,7 +165,9 @@ const sampleData = {
       tags: ["alma", "silêncio", "reflexão"],
       published: true,
       date: "5 de Janeiro, 2025",
-      author: "Admin"
+      author: "Admin",
+      image: null,
+      excerpt: "No silêncio profundo da noite escura..."
     }
   ],
   filosofia: [
@@ -146,7 +179,9 @@ const sampleData = {
       tags: ["tempo", "existência", "filosofia"],
       published: true,
       date: "3 de Janeiro, 2025",
-      author: "Admin"
+      author: "Admin",
+      image: null,
+      excerpt: "Reflexões sobre a percepção humana do tempo..."
     }
   ],
   religiao: [
@@ -158,7 +193,9 @@ const sampleData = {
       tags: ["fé", "razão", "diálogo"],
       published: true,
       date: "1° de Janeiro, 2025",
-      author: "Admin"
+      author: "Admin",
+      image: null,
+      excerpt: "Explorando a harmonia entre a fé religiosa..."
     }
   ]
 };
@@ -690,13 +727,18 @@ app.get('/poemas', (req, res) => {
         <div class="posts-grid">
             ${sampleData.poemas.map(poema => `
                 <article class="post-card">
-                    <div class="post-category poemas">Poema</div>
-                    <h4 class="post-title">${poema.title}</h4>
-                    <p class="post-excerpt">${poema.content[0].substring(0, 100)}...</p>
-                    <div class="post-meta">
-                        <span class="post-date">${poema.date}</span>
+                    ${poema.image ? `<div class="post-image">
+                        <img src="${poema.image}" alt="${poema.title}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px 8px 0 0;">
+                    </div>` : ''}
+                    <div class="post-content" style="padding: ${poema.image ? '20px' : '20px 20px 0'};">
+                        <div class="post-category poemas">Poema</div>
+                        <h4 class="post-title">${poema.title}</h4>
+                        <p class="post-excerpt">${poema.content[0].substring(0, 100)}...</p>
+                        <div class="post-meta">
+                            <span class="post-date">${poema.date}</span>
+                        </div>
+                        <a href="/poemas/${poema.id}" class="read-more">Ler mais</a>
                     </div>
-                    <a href="/poemas/${poema.id}" class="read-more">Ler mais</a>
                 </article>
             `).join('')}
         </div>
@@ -714,13 +756,18 @@ app.get('/filosofia', (req, res) => {
         <div class="posts-grid">
             ${sampleData.filosofia.map(artigo => `
                 <article class="post-card">
-                    <div class="post-category filosofia">Filosofia</div>
-                    <h4 class="post-title">${artigo.title}</h4>
-                    <p class="post-excerpt">${artigo.content[0].substring(0, 100)}...</p>
-                    <div class="post-meta">
-                        <span class="post-date">${artigo.date}</span>
+                    ${artigo.image ? `<div class="post-image">
+                        <img src="${artigo.image}" alt="${artigo.title}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px 8px 0 0;">
+                    </div>` : ''}
+                    <div class="post-content" style="padding: ${artigo.image ? '20px' : '20px 20px 0'};">
+                        <div class="post-category filosofia">Filosofia</div>
+                        <h4 class="post-title">${artigo.title}</h4>
+                        <p class="post-excerpt">${artigo.content[0].substring(0, 100)}...</p>
+                        <div class="post-meta">
+                            <span class="post-date">${artigo.date}</span>
+                        </div>
+                        <a href="/filosofia/${artigo.id}" class="read-more">Ler mais</a>
                     </div>
-                    <a href="/filosofia/${artigo.id}" class="read-more">Ler mais</a>
                 </article>
             `).join('')}
         </div>
@@ -738,13 +785,18 @@ app.get('/religiao', (req, res) => {
         <div class="posts-grid">
             ${sampleData.religiao.map(artigo => `
                 <article class="post-card">
-                    <div class="post-category religiao">Religião</div>
-                    <h4 class="post-title">${artigo.title}</h4>
-                    <p class="post-excerpt">${artigo.content[0].substring(0, 100)}...</p>
-                    <div class="post-meta">
-                        <span class="post-date">${artigo.date}</span>
+                    ${artigo.image ? `<div class="post-image">
+                        <img src="${artigo.image}" alt="${artigo.title}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px 8px 0 0;">
+                    </div>` : ''}
+                    <div class="post-content" style="padding: ${artigo.image ? '20px' : '20px 20px 0'};">
+                        <div class="post-category religiao">Religião</div>
+                        <h4 class="post-title">${artigo.title}</h4>
+                        <p class="post-excerpt">${artigo.content[0].substring(0, 100)}...</p>
+                        <div class="post-meta">
+                            <span class="post-date">${artigo.date}</span>
+                        </div>
+                        <a href="/religiao/${artigo.id}" class="read-more">Ler mais</a>
                     </div>
-                    <a href="/religiao/${artigo.id}" class="read-more">Ler mais</a>
                 </article>
             `).join('')}
         </div>
@@ -787,6 +839,9 @@ app.get('/poemas/:id', (req, res) => {
                     <span class="single-date">${poema.date}</span>
                 </div>
             </header>
+            ${poema.image ? `<div class="single-image" style="text-align: center; margin: 30px 0;">
+                <img src="${poema.image}" alt="${poema.title}" style="max-width: 100%; height: auto; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+            </div>` : ''}
             <div class="single-body poem-content-full">
                 ${poema.content.map(line => line ? `${line}<br>` : '<br><br>').join('')}
             </div>
@@ -1471,11 +1526,23 @@ app.get('/admin/poemas/novo', isAuthenticated, (req, res) => {
         </div>
         
         <div class="admin-card-body">
-            <form method="POST" action="/admin/poemas/novo" class="admin-form">
+            <form method="POST" action="/admin/poemas/novo" enctype="multipart/form-data" class="admin-form">
                 <div class="admin-form-group">
                     <label for="title" class="admin-form-label">Título do Poema</label>
                     <input type="text" id="title" name="title" class="admin-form-input" 
                            placeholder="Digite o título do poema" required>
+                </div>
+                
+                <div class="admin-form-group">
+                    <label for="image" class="admin-form-label">
+                        <i data-lucide="image" style="width: 16px; height: 16px; margin-right: 8px;"></i>
+                        Imagem do Poema (Opcional)
+                    </label>
+                    <input type="file" id="image" name="image" class="admin-form-input" 
+                           accept="image/*" style="padding: 10px;">
+                    <small style="color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-top: 8px; display: block;">
+                        Formatos aceitos: JPG, PNG, GIF. Tamanho máximo: 5MB
+                    </small>
                 </div>
                 
                 <div class="admin-form-group">
@@ -1526,11 +1593,23 @@ app.get('/admin/filosofia/novo', isAuthenticated, (req, res) => {
         </div>
         
         <div class="admin-card-body">
-            <form method="POST" action="/admin/filosofia/novo" class="admin-form">
+            <form method="POST" action="/admin/filosofia/novo" enctype="multipart/form-data" class="admin-form">
                 <div class="admin-form-group">
                     <label for="title" class="admin-form-label">Título do Artigo</label>
                     <input type="text" id="title" name="title" class="admin-form-input" 
                            placeholder="Digite o título do artigo" required>
+                </div>
+                
+                <div class="admin-form-group">
+                    <label for="image" class="admin-form-label">
+                        <i data-lucide="image" style="width: 16px; height: 16px; margin-right: 8px;"></i>
+                        Imagem do Artigo (Opcional)
+                    </label>
+                    <input type="file" id="image" name="image" class="admin-form-input" 
+                           accept="image/*" style="padding: 10px;">
+                    <small style="color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-top: 8px; display: block;">
+                        Formatos aceitos: JPG, PNG, GIF. Tamanho máximo: 5MB
+                    </small>
                 </div>
                 
                 <div class="admin-form-group">
@@ -1593,11 +1672,23 @@ app.get('/admin/religiao/novo', isAuthenticated, (req, res) => {
         </div>
         
         <div class="admin-card-body">
-            <form method="POST" action="/admin/religiao/novo" class="admin-form">
+            <form method="POST" action="/admin/religiao/novo" enctype="multipart/form-data" class="admin-form">
                 <div class="admin-form-group">
                     <label for="title" class="admin-form-label">Título do Artigo</label>
                     <input type="text" id="title" name="title" class="admin-form-input" 
                            placeholder="Digite o título do artigo" required>
+                </div>
+                
+                <div class="admin-form-group">
+                    <label for="image" class="admin-form-label">
+                        <i data-lucide="image" style="width: 16px; height: 16px; margin-right: 8px;"></i>
+                        Imagem do Artigo (Opcional)
+                    </label>
+                    <input type="file" id="image" name="image" class="admin-form-input" 
+                           accept="image/*" style="padding: 10px;">
+                    <small style="color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-top: 8px; display: block;">
+                        Formatos aceitos: JPG, PNG, GIF. Tamanho máximo: 5MB
+                    </small>
                 </div>
                 
                 <div class="admin-form-group">
@@ -1642,7 +1733,7 @@ app.get('/admin/religiao/novo', isAuthenticated, (req, res) => {
 });
 
 // Rotas POST para salvar novos artigos
-app.post('/admin/poemas/novo', isAuthenticated, (req, res) => {
+app.post('/admin/poemas/novo', isAuthenticated, upload.single('image'), (req, res) => {
   const { title, content, date } = req.body;
   
   // Criar novo ID
@@ -1651,13 +1742,24 @@ app.post('/admin/poemas/novo', isAuthenticated, (req, res) => {
   // Processar conteúdo (quebrar em linhas)
   const contentLines = content.split('\n').filter(line => line.trim() !== '');
   
+  // Processar imagem se foi enviada
+  let imagePath = null;
+  if (req.file) {
+    imagePath = `/images/uploads/${req.file.filename}`;
+  }
+  
   // Criar novo poema
   const newPoema = {
     id: newId,
     title: title.trim(),
     content: contentLines,
     date: date,
-    excerpt: contentLines[0] || ''
+    excerpt: contentLines[0] || '',
+    image: imagePath,
+    category: "existencial",
+    tags: ["poesia"],
+    published: true,
+    author: "Admin"
   };
   
   // Adicionar aos dados
@@ -1666,7 +1768,7 @@ app.post('/admin/poemas/novo', isAuthenticated, (req, res) => {
   res.redirect('/admin/poemas');
 });
 
-app.post('/admin/filosofia/novo', isAuthenticated, (req, res) => {
+app.post('/admin/filosofia/novo', isAuthenticated, upload.single('image'), (req, res) => {
   const { title, content, category, date } = req.body;
   
   // Criar novo ID
@@ -1675,6 +1777,12 @@ app.post('/admin/filosofia/novo', isAuthenticated, (req, res) => {
   // Processar conteúdo (quebrar em parágrafos)
   const contentParagraphs = content.split('\n').filter(line => line.trim() !== '');
   
+  // Processar imagem se foi enviada
+  let imagePath = null;
+  if (req.file) {
+    imagePath = `/images/uploads/${req.file.filename}`;
+  }
+  
   // Criar novo artigo
   const newArtigo = {
     id: newId,
@@ -1682,7 +1790,11 @@ app.post('/admin/filosofia/novo', isAuthenticated, (req, res) => {
     content: contentParagraphs,
     category: category,
     date: date,
-    excerpt: contentParagraphs[0] ? contentParagraphs[0].substring(0, 150) + '...' : ''
+    excerpt: contentParagraphs[0] ? contentParagraphs[0].substring(0, 150) + '...' : '',
+    image: imagePath,
+    tags: ["filosofia"],
+    published: true,
+    author: "Admin"
   };
   
   // Adicionar aos dados
@@ -1691,7 +1803,7 @@ app.post('/admin/filosofia/novo', isAuthenticated, (req, res) => {
   res.redirect('/admin/filosofia');
 });
 
-app.post('/admin/religiao/novo', isAuthenticated, (req, res) => {
+app.post('/admin/religiao/novo', isAuthenticated, upload.single('image'), (req, res) => {
   const { title, content, category, date } = req.body;
   
   // Criar novo ID
@@ -1700,6 +1812,12 @@ app.post('/admin/religiao/novo', isAuthenticated, (req, res) => {
   // Processar conteúdo (quebrar em parágrafos)
   const contentParagraphs = content.split('\n').filter(line => line.trim() !== '');
   
+  // Processar imagem se foi enviada
+  let imagePath = null;
+  if (req.file) {
+    imagePath = `/images/uploads/${req.file.filename}`;
+  }
+  
   // Criar novo artigo
   const newArtigo = {
     id: newId,
@@ -1707,7 +1825,11 @@ app.post('/admin/religiao/novo', isAuthenticated, (req, res) => {
     content: contentParagraphs,
     category: category,
     date: date,
-    excerpt: contentParagraphs[0] ? contentParagraphs[0].substring(0, 150) + '...' : ''
+    excerpt: contentParagraphs[0] ? contentParagraphs[0].substring(0, 150) + '...' : '',
+    image: imagePath,
+    tags: ["religião"],
+    published: true,
+    author: "Admin"
   };
   
   // Adicionar aos dados
