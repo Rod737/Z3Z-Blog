@@ -163,10 +163,10 @@ const sampleData = {
   ]
 };
 
-// Dados de admin (senha: admin123)
+// Dados de admin (email: pizzollo13@gmail.com / senha: cubo444)
 const adminData = {
-  username: 'admin',
-  password: '$2b$10$4.mndqjFtudDHwDD.bejmOyL5PRimr5d4oU.h3.cSWQA2mo4TEXvq' // bcryptjs hash of 'admin123'
+  username: 'pizzollo13@gmail.com',
+  password: '$2b$10$EkDgevUjVA3XdQ3c0bP5CO4L8fthKCNciKuI.jASDJsXl5bZgRHGu' // bcryptjs hash of 'cubo444'
 };
 
 // Middleware de autenticação
@@ -1136,13 +1136,13 @@ app.get('/admin/login', (req, res) => {
                 <form method="POST" action="/admin/login" class="login-form">
                     <div class="form-group">
                         <label for="username" class="form-label">
-                            <i data-lucide="user" style="width: 16px; height: 16px; margin-right: 8px;"></i>
-                            Usuário
+                            <i data-lucide="mail" style="width: 16px; height: 16px; margin-right: 8px;"></i>
+                            Email
                         </label>
                         <div style="position: relative;">
-                            <i data-lucide="user" class="form-icon" style="width: 20px; height: 20px;"></i>
-                            <input type="text" id="username" name="username" class="form-input" 
-                                   placeholder="Digite seu usuário" required autofocus>
+                            <i data-lucide="mail" class="form-icon" style="width: 20px; height: 20px;"></i>
+                            <input type="email" id="username" name="username" class="form-input" 
+                                   placeholder="Digite seu email" required autofocus>
                         </div>
                     </div>
 
