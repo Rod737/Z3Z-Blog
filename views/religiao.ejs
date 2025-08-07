@@ -1,0 +1,28 @@
+<div class="container">
+    <div class="section-header">
+        <h2 class="section-title">Religião</h2>
+        <p class="section-description">Explorando a dimensão sagrada da existência e o diálogo entre tradições</p>
+    </div>
+
+    <div class="religion-articles">
+        <% artigos.forEach(artigo => { %>
+            <article class="religion-card">
+                <h3 class="article-title"><%= artigo.title %></h3>
+                <div class="article-content">
+                    <% artigo.content.slice(0, 2).forEach(paragrafo => { %>
+                        <p><%= paragrafo %></p>
+                    <% }); %>
+                    <% if (artigo.content.length > 2) { %>
+                        <p class="read-more-link">
+                            <a href="/religiao/<%= artigo.id %>">Continuar lendo...</a>
+                        </p>
+                    <% } %>
+                </div>
+                <div class="article-meta">
+                    <span class="article-date"><%= artigo.date %></span>
+                    <span class="article-tags"><%= artigo.tags.join(', ') %></span>
+                </div>
+            </article>
+        <% }); %>
+    </div>
+</div>

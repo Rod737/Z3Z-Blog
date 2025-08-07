@@ -1,0 +1,84 @@
+<!-- Banner de Boas-vindas -->
+<div class="welcome-banner">
+    <div class="container">
+        <h2 class="welcome-text z3z-text">Bem-vindos ao Z<span class="z3z-number">3</span>Z</h2>
+        <p class="welcome-subtitle">Um espaço sagrado para a alma, onde poesia, filosofia e espiritualidade se encontram</p>
+    </div>
+</div>
+
+<!-- Seção Hero -->
+<div class="hero">
+    <div class="hero-content">
+        <div class="hero-quote">
+            <blockquote>"A verdadeira sabedoria está em reconhecer a própria ignorância."</blockquote>
+            <cite>— Sócrates</cite>
+        </div>
+    </div>
+</div>
+
+<!-- Posts em Destaque -->
+<div class="featured-posts">
+    <div class="container">
+        <h3 class="section-title">Destaques Recentes</h3>
+        <div class="posts-grid">
+            <% featuredPosts.forEach(post => { %>
+                <article class="post-card">
+                    <div class="post-category <%= post.category %>">
+                        <%= post.category.charAt(0).toUpperCase() + post.category.slice(1) %>
+                    </div>
+                    <h4 class="post-title"><%= post.title %></h4>
+                    <p class="post-excerpt"><%= post.excerpt %></p>
+                    <div class="post-meta">
+                        <span class="post-date"><%= post.date %></span>
+                    </div>
+                    <a href="<%= post.link %>" class="read-more">Ler mais</a>
+                </article>
+            <% }); %>
+        </div>
+    </div>
+</div>
+
+<!-- Seção YouTube Premium -->
+<div class="youtube-section">
+    <div class="container">
+        <div class="youtube-content">
+            <div class="youtube-info">
+                <h3 class="youtube-section-title">🎥 Os Escolhidos Divinos</h3>
+                <p class="youtube-description">
+                    Mergulhe em reflexões profundas sobre espiritualidade, filosofia e religião em nosso canal do YouTube. 
+                    Conteúdo exclusivo que complementa as leituras deste blog.
+                </p>
+                <div class="youtube-features">
+                    <div class="feature-item">
+                        <span class="feature-icon">📚</span>
+                        <span>Análises profundas de textos sagrados</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">🧘</span>
+                        <span>Meditações e práticas espirituais</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">💭</span>
+                        <span>Reflexões filosóficas contemporâneas</span>
+                    </div>
+                </div>
+                <a href="https://www.youtube.com/@OsEscolhidosDivinos" target="_blank" class="youtube-main-btn">
+                    <span class="youtube-btn-icon">📺</span>
+                    <span>Visitar Canal</span>
+                </a>
+            </div>
+            <div class="youtube-visual">
+                <div class="youtube-placeholder">
+                    <div class="play-button">
+                        <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
+                            <circle cx="30" cy="30" r="30" fill="#FF0000"/>
+                            <polygon points="23,18 23,42 40,30" fill="white"/>
+                        </svg>
+                    </div>
+                    <div class="video-title">Os Escolhidos Divinos</div>
+                    <div class="video-subtitle">Canal Oficial no YouTube</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,66 @@
+<div style="margin-bottom: 20px;">
+    <a href="/admin/filosofia/novo" class="admin-btn admin-btn-primary">
+        <i data-lucide="brain" style="width: 16px; height: 16px; margin-right: 8px;"></i>
+        Nova Reflexão
+    </a>
+</div>
+
+<div class="admin-table">
+    <table>
+        <thead>
+            <tr>
+                <th>Título</th>
+                <th>Autor</th>
+                <th>Data</th>
+                <th>Status</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if (artigos.length === 0) { %>
+                <tr>
+                    <td colspan="5" style="text-align: center; padding: 40px; color: var(--medium-gray);">
+                        Nenhum artigo de filosofia encontrado. <a href="/admin/filosofia/novo">Criar o primeiro artigo</a>
+                    </td>
+                </tr>
+            <% } else { %>
+                <% artigos.forEach(artigo => { %>
+                    <tr>
+                        <td>
+                            <strong><%= artigo.title %></strong>
+                            <br>
+                            <small style="color: var(--medium-gray);">
+                                <%= artigo.excerpt || artigo.content[0].substring(0, 100) %>...
+                            </small>
+                        </td>
+                        <td><%= artigo.author %></td>
+                        <td>
+                            <%= new Date(artigo.date).toLocaleDateString('pt-BR') %>
+                        </td>
+                        <td>
+                            <% if (artigo.published) { %>
+                                <span class="admin-status published">Publicado</span>
+                            <% } else { %>
+                                <span class="admin-status draft">Rascunho</span>
+                            <% } %>
+                        </td>
+                        <td>
+                            <a href="/admin/filosofia/<%= artigo.id %>/editar" class="admin-btn admin-btn-secondary" style="padding: 6px 12px; font-size: 0.8rem;">
+                                <i data-lucide="edit" style="width: 14px; height: 14px; margin-right: 6px;"></i>
+                                Editar
+                            </a>
+                            <form method="POST" action="/admin/filosofia/<%= artigo.id %>/excluir" 
+                                  style="display: inline;" 
+                                  onsubmit="return confirm('Tem certeza que deseja excluir este artigo?')">
+                                <button type="submit" class="admin-btn admin-btn-danger" style="padding: 6px 12px; font-size: 0.8rem;">
+                                    <i data-lucide="trash-2" style="width: 14px; height: 14px; margin-right: 6px;"></i>
+                                    Excluir
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                <% }); %>
+            <% } %>
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,65 @@
+[
+    {
+        "id": 1,
+        "title": "O Silêncio da Alma",
+        "content": [
+            "No silêncio profundo da noite escura,",
+            "A alma sussurra verdades que o dia não ousa revelar,",
+            "Entre sombras e luz, busca-se a ventura",
+            "De compreender o que significa amar.",
+            "",
+            "Nas entrelinhas do tempo que passa,",
+            "Encontramos fragmentos de eternidade,",
+            "E mesmo quando a esperança se cansa,",
+            "Permanece a beleza da simplicidade."
+        ],
+        "category": "existencial",
+        "date": "2025-01-05",
+        "tags": ["Existencial", "Reflexão"],
+        "published": true,
+        "created_at": "2025-01-05T10:00:00Z",
+        "updated_at": "2025-01-05T10:00:00Z"
+    },
+    {
+        "id": 2,
+        "title": "Dança das Estações",
+        "content": [
+            "Primavera desperta com seus tons de esperança,",
+            "Verão abraça com calor e paixão,",
+            "Outono ensina que toda mudança",
+            "É parte da eterna renovação.",
+            "",
+            "Inverno contempla em seu manto sereno,",
+            "A sabedoria do recolhimento,",
+            "E assim segue o ciclo, pleno",
+            "De significado e encantamento."
+        ],
+        "category": "natureza",
+        "date": "2025-01-04",
+        "tags": ["Natureza", "Ciclos"],
+        "published": true,
+        "created_at": "2025-01-04T14:30:00Z",
+        "updated_at": "2025-01-04T14:30:00Z"
+    },
+    {
+        "id": 3,
+        "title": "Amor Eterno",
+        "content": [
+            "Amor não é apenas sentimento,",
+            "É decisão que se renova a cada dia,",
+            "No silêncio do entendimento",
+            "Floresce a mais pura harmonia.",
+            "",
+            "Entre olhares que se encontram",
+            "E palavras que não precisam ser ditas,",
+            "Duas almas se reencontram",
+            "Em histórias infinitas."
+        ],
+        "category": "amor",
+        "date": "2025-01-03",
+        "tags": ["Amor", "Relacionamentos"],
+        "published": true,
+        "created_at": "2025-01-03T16:45:00Z",
+        "updated_at": "2025-01-03T16:45:00Z"
+    }
+]

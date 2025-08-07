@@ -1,0 +1,84 @@
+<div style="margin-bottom: 20px;">
+    <a href="/admin/poemas" style="color: var(--primary-red); text-decoration: none;">
+        ← Voltar para lista de poemas
+    </a>
+</div>
+
+<form method="POST" class="admin-form">
+    <div class="admin-form-group">
+        <label for="title" class="admin-form-label">Título do Poema</label>
+        <input type="text" id="title" name="title" class="admin-form-input" 
+               value="<%= poema ? poema.title : '' %>" required>
+    </div>
+
+    <div class="admin-form-group">
+        <label for="content" class="admin-form-label">Conteúdo</label>
+        <textarea id="content" name="content" class="admin-form-textarea" 
+                  placeholder="Digite seu poema aqui... Uma linha por verso." required><%= poema ? poema.content.join('\n') : '' %></textarea>
+        <small style="color: var(--medium-gray); margin-top: 5px; display: block;">
+            Cada linha será um verso do poema. Deixe linhas em branco para separar estrofes.
+        </small>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+        <div class="admin-form-group">
+            <label for="category" class="admin-form-label">Categoria</label>
+            <select id="category" name="category" class="admin-form-select">
+                <option value="amor" <%= poema && poema.category === 'amor' ? 'selected' : '' %>>Amor</option>
+                <option value="natureza" <%= poema && poema.category === 'natureza' ? 'selected' : '' %>>Natureza</option>
+                <option value="existencial" <%= poema && poema.category === 'existencial' ? 'selected' : '' %>>Existencial</option>
+                <option value="espiritual" <%= poema && poema.category === 'espiritual' ? 'selected' : '' %>>Espiritual</option>
+                <option value="geral" <%= poema && poema.category === 'geral' ? 'selected' : '' %>>Geral</option>
+            </select>
+        </div>
+
+        <div class="admin-form-group">
+            <label for="tags" class="admin-form-label">Tags</label>
+            <input type="text" id="tags" name="tags" class="admin-form-input" 
+                   value="<%= poema ? poema.tags.join(', ') : '' %>"
+                   placeholder="Ex: Amor, Relacionamentos, Reflexão">
+            <small style="color: var(--medium-gray); margin-top: 5px; display: block;">
+                Separe as tags por vírgula
+            </small>
+        </div>
+    </div>
+
+    <div class="admin-form-group">
+        <label style="display: flex; align-items: center; cursor: pointer;">
+            <input type="checkbox" name="published" class="admin-form-checkbox"
+                   <%= poema && poema.published ? 'checked' : '' %>>
+            <span class="admin-form-label" style="margin: 0; margin-left: 8px;">Publicar imediatamente</span>
+        </label>
+        <small style="color: var(--medium-gray); margin-top: 5px; display: block;">
+            Se desmarcado, o poema será salvo como rascunho
+        </small>
+    </div>
+
+    <div style="margin-top: 30px; display: flex; gap: 15px;">
+        <button type="submit" class="admin-btn admin-btn-primary">
+            <% if (action === 'criar') { %>
+                ✨ Criar Poema
+            <% } else { %>
+                💾 Salvar Alterações
+            <% } %>
+        </button>
+        
+        <a href="/admin/poemas" class="admin-btn admin-btn-secondary">
+            Cancelar
+        </a>
+    </div>
+</form>
+
+<script>
+// Preview do poema
+document.getElementById('content').addEventListener('input', function() {
+    // Aqui você pode adicionar uma preview em tempo real se desejar
+});
+
+// Auto-resize do textarea
+const textarea = document.getElementById('content');
+textarea.addEventListener('input', function() {
+    this.style.height = 'auto';
+    this.style.height = Math.max(200, this.scrollHeight) + 'px';
+});
+</script>

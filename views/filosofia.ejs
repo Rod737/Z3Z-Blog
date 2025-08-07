@@ -1,0 +1,28 @@
+<div class="container">
+    <div class="section-header">
+        <h2 class="section-title">Filosofia</h2>
+        <p class="section-description">Reflexões profundas sobre a existência, conhecimento e valores humanos</p>
+    </div>
+
+    <div class="philosophy-articles">
+        <% artigos.forEach(artigo => { %>
+            <article class="philosophy-card">
+                <h3 class="article-title"><%= artigo.title %></h3>
+                <div class="article-content">
+                    <% artigo.content.slice(0, 2).forEach(paragrafo => { %>
+                        <p><%= paragrafo %></p>
+                    <% }); %>
+                    <% if (artigo.content.length > 2) { %>
+                        <p class="read-more-link">
+                            <a href="/filosofia/<%= artigo.id %>">Continuar lendo...</a>
+                        </p>
+                    <% } %>
+                </div>
+                <div class="article-meta">
+                    <span class="article-date"><%= artigo.date %></span>
+                    <span class="article-tags"><%= artigo.tags.join(', ') %></span>
+                </div>
+            </article>
+        <% }); %>
+    </div>
+</div>

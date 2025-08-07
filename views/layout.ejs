@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <meta name="description" content="Explore a profundidade da alma humana através de poemas, reflexões filosóficas e insights religiosos no Blog Z3Z.">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Oswald:wght@400;600;700&family=Roboto+Slab:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <div class="nav-container">
+                <div class="logo">
+                    <img src="/images/image.png" alt="Z3Z Blog Logo" class="logo-img">
+                    <h1 class="logo-text z3z-logo z3z-text">Z<span class="z3z-number">3</span>Z</h1>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="/" class="nav-link <%= currentPage === 'home' ? 'active' : '' %>">Início</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/poemas" class="nav-link <%= currentPage === 'poemas' ? 'active' : '' %>">Poemas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/filosofia" class="nav-link <%= currentPage === 'filosofia' ? 'active' : '' %>">Filosofia</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/religiao" class="nav-link <%= currentPage === 'religiao' ? 'active' : '' %>">Religião</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/sobre" class="nav-link <%= currentPage === 'sobre' ? 'active' : '' %>">Sobre</a>
+                    </li>
+                </ul>
+                <div class="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main">
+        <%- body %>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Z3Z Blog</h4>
+                    <p>Um espaço sagrado para a alma</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Categorias</h4>
+                    <ul>
+                        <li><a href="/poemas">Poemas</a></li>
+                        <li><a href="/filosofia">Filosofia</a></li>
+                        <li><a href="/religiao">Religião</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Contato</h4>
+                    <p>Compartilhe suas reflexões conosco</p>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 Z3Z Blog. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Widget YouTube Premium -->
+    <div class="youtube-widget">
+        <a href="https://www.youtube.com/@OsEscolhidosDivinos" target="_blank" class="youtube-button">
+            <span class="youtube-icon">📺</span>
+            <span class="youtube-text">YouTube</span>
+        </a>
+        <div class="youtube-tooltip">
+            <h4>Os Escolhidos Divinos</h4>
+            <p>Descubra conteúdos espirituais profundos em nosso canal do YouTube. Inscreva-se para receber as últimas reflexões!</p>
+        </div>
+    </div>
+
+    <!-- Card flutuante alternativo (aparece após tempo) -->
+    <div class="youtube-floating" id="youtubeFloating">
+        <div class="youtube-card">
+            <button class="youtube-close" onclick="closeYouTubeCard()">&times;</button>
+            <h3>🎥 Visite Nosso Canal!</h3>
+            <p>Explore vídeos exclusivos sobre espiritualidade, filosofia e religião no canal "Os Escolhidos Divinos".</p>
+            <a href="https://www.youtube.com/@OsEscolhidosDivinos" target="_blank" class="youtube-card-btn">
+                <span>📺</span>
+                <span>Visitar Canal</span>
+            </a>
+        </div>
+    </div>
+
+    <script src="/js/script.js"></script>
+</body>
+</html>

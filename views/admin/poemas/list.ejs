@@ -1,0 +1,84 @@
+<div style="margin-bottom: 20px;">
+    <a href="/admin/poemas/novo" class="admin-btn admin-btn-primary">➕ Novo Poema</a>
+</div>
+
+<% const urlParams = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : ''); %>
+<% if (typeof window !== 'undefined' && urlParams.get('success')) { %>
+    <div class="admin-alert success">
+        <% if (urlParams.get('success') === 'created') { %>
+            Poema criado com sucesso!
+        <% } else if (urlParams.get('success') === 'updated') { %>
+            Poema atualizado com sucesso!
+        <% } else if (urlParams.get('success') === 'deleted') { %>
+            Poema excluído com sucesso!
+        <% } %>
+    </div>
+<% } %>
+
+<% if (typeof window !== 'undefined' && urlParams.get('error')) { %>
+    <div class="admin-alert error">
+        Erro ao processar solicitação. Tente novamente.
+    </div>
+<% } %>
+
+<div class="admin-table">
+    <table>
+        <thead>
+            <tr>
+                <th>Título</th>
+                <th>Categoria</th>
+                <th>Data</th>
+                <th>Status</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if (poemas.length === 0) { %>
+                <tr>
+                    <td colspan="5" style="text-align: center; padding: 40px; color: var(--medium-gray);">
+                        Nenhum poema encontrado. <a href="/admin/poemas/novo">Criar o primeiro poema</a>
+                    </td>
+                </tr>
+            <% } else { %>
+                <% poemas.forEach(poema => { %>
+                    <tr>
+                        <td>
+                            <strong><%= poema.title %></strong>
+                            <br>
+                            <small style="color: var(--medium-gray);">
+                                <%= poema.content.slice(0, 2).join(' ').substring(0, 80) %>...
+                            </small>
+                        </td>
+                        <td>
+                            <span style="padding: 4px 8px; background: var(--secondary-gold); color: var(--navy-blue); border-radius: 4px; font-size: 0.8rem;">
+                                <%= poema.category %>
+                            </span>
+                        </td>
+                        <td>
+                            <%= new Date(poema.date).toLocaleDateString('pt-BR') %>
+                        </td>
+                        <td>
+                            <% if (poema.published) { %>
+                                <span class="admin-status published">Publicado</span>
+                            <% } else { %>
+                                <span class="admin-status draft">Rascunho</span>
+                            <% } %>
+                        </td>
+                        <td>
+                            <a href="/admin/poemas/<%= poema.id %>/editar" class="admin-btn admin-btn-secondary" style="padding: 6px 12px; font-size: 0.8rem;">
+                                ✏️ Editar
+                            </a>
+                            <form method="POST" action="/admin/poemas/<%= poema.id %>/excluir" 
+                                  style="display: inline;" 
+                                  onsubmit="return confirm('Tem certeza que deseja excluir este poema?')">
+                                <button type="submit" class="admin-btn admin-btn-danger" style="padding: 6px 12px; font-size: 0.8rem;">
+                                    🗑️ Excluir
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                <% }); %>
+            <% } %>
+        </tbody>
+    </table>
+</div>

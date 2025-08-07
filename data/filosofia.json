@@ -1,0 +1,37 @@
+[
+    {
+        "id": 1,
+        "title": "A Natureza do Tempo",
+        "content": [
+            "O tempo é uma das dimensões mais fascinantes e enigmáticas da experiência humana. Santo Agostinho já dizia: \"O que é então o tempo? Se ninguém me pergunta, eu sei; se quero explicar a quem pergunta, não sei.\"",
+            "Nossa percepção temporal é profundamente subjetiva. Um momento de alegria parece voar, enquanto o sofrimento parece eternizar-se. Será o tempo uma construção da consciência ou uma realidade objetiva que nos transcende?",
+            "Os filósofos modernos como Bergson nos ensinam sobre a diferença entre o tempo mecânico dos relógios e o tempo vivido da consciência. Este último é o que realmente importa para a construção do sentido da vida.",
+            "Martin Heidegger nos fala sobre a temporalidade como característica fundamental do Dasein (ser-aí). Para ele, existimos temporalmente, projetando-nos constantemente em direção ao futuro, enquanto carregamos o peso do passado.",
+            "A filosofia oriental, particularmente o budismo, oferece uma perspectiva diferente: o tempo como ilusão, onde apenas o momento presente possui realidade verdadeira. A prática da mindfulness busca nos reconectar com essa dimensão atemporal da experiência."
+        ],
+        "excerpt": "Reflexões sobre a percepção humana do tempo e sua influência na construção do sentido da vida...",
+        "date": "2025-01-03",
+        "tags": ["Tempo", "Consciência", "Existência"],
+        "author": "Equipe Z3Z",
+        "published": true,
+        "created_at": "2025-01-03T09:15:00Z",
+        "updated_at": "2025-01-03T09:15:00Z"
+    },
+    {
+        "id": 2,
+        "title": "O Sentido da Vida",
+        "content": [
+            "Viktor Frankl, sobrevivente do Holocausto, nos ensinou que mesmo nas circunstâncias mais adversas, o ser humano pode encontrar sentido. Não se trata de buscar a felicidade diretamente, mas de encontrar um propósito que torne os sofrimentos suportáveis.",
+            "O sentido não é algo que se descobre pronto, mas algo que se constrói através das escolhas, dos relacionamentos e da contribuição que oferecemos ao mundo. Cada pessoa deve encontrar seu próprio caminho.",
+            "A logoterapia de Frankl nos mostra que a busca por significado é a força motivacional primária do ser humano, mais fundamental que a busca pelo prazer ou pelo poder.",
+            "Friedrich Nietzsche proclamou que \"quem tem um porquê viver pode suportar quase qualquer como\". Esta frase, citada por Frankl, resume a importância do sentido na experiência humana."
+        ],
+        "excerpt": "Explorando o conceito de sentido da vida através da perspectiva de Viktor Frankl e da logoterapia...",
+        "date": "2025-01-02",
+        "tags": ["Sentido", "Propósito", "Frankl"],
+        "author": "Equipe Z3Z",
+        "published": true,
+        "created_at": "2025-01-02T11:20:00Z",
+        "updated_at": "2025-01-02T11:20:00Z"
+    }
+]

@@ -1,0 +1,101 @@
+<div class="container">
+    <article class="single-content">
+        <header class="single-header">
+            <h1 class="single-title"><%= artigo.title %></h1>
+            <div class="single-meta">
+                <span class="single-category <%= type %>">
+                    <%= type.charAt(0).toUpperCase() + type.slice(1) %>
+                </span>
+                <span class="single-date"><%= artigo.date %></span>
+                <span class="single-tags"><%= artigo.tags.join(', ') %></span>
+            </div>
+        </header>
+
+        <div class="single-body">
+            <% artigo.content.forEach(paragrafo => { %>
+                <p><%= paragrafo %></p>
+            <% }); %>
+        </div>
+
+        <div class="single-navigation">
+            <a href="/<%= type %>" class="back-link">← Voltar a <%= type.charAt(0).toUpperCase() + type.slice(1) %></a>
+        </div>
+
+        <div class="share-section">
+            <h4>Compartilhar</h4>
+            <div class="share-buttons">
+                <button class="share-btn" data-platform="facebook">Facebook</button>
+                <button class="share-btn" data-platform="twitter">Twitter</button>
+                <button class="share-btn" data-platform="whatsapp">WhatsApp</button>
+            </div>
+        </div>
+    </article>
+
+    <!-- Seção de Comentários -->
+    <section class="comments-section" id="comments">
+        <div class="comments-header">
+            <h3 class="comments-title">💭 Compartilhe suas Reflexões</h3>
+            <p class="comments-subtitle">
+                <% if (type === 'filosofia') { %>
+                    Deixe sua reflexão filosófica e dialogue com outros pensadores
+                <% } else if (type === 'religiao') { %>
+                    Compartilhe sua experiência espiritual e conecte-se com outros fiéis
+                <% } else { %>
+                    Deixe sua impressão sobre este artigo e conecte-se com outros leitores
+                <% } %>
+            </p>
+        </div>
+
+        <!-- Formulário de Comentário -->
+        <div class="comment-form-container">
+            <form class="comment-form" id="commentForm" data-post-id="<%= artigo.id %>" data-category="<%= type %>">
+                <div class="comment-form-row">
+                    <div class="comment-form-group">
+                        <label for="commentName" class="comment-form-label">Nome *</label>
+                        <input type="text" id="commentName" name="name" class="comment-form-input" required placeholder="Seu nome">
+                    </div>
+                    <div class="comment-form-group">
+                        <label for="commentEmail" class="comment-form-label">Email *</label>
+                        <input type="email" id="commentEmail" name="email" class="comment-form-input" required placeholder="seu@email.com">
+                        <small class="comment-form-help">Seu email não será exibido publicamente</small>
+                    </div>
+                </div>
+                <div class="comment-form-group">
+                    <label for="commentText" class="comment-form-label">Comentário *</label>
+                    <textarea id="commentText" name="comment" class="comment-form-textarea" required 
+                              placeholder="<% if (type === 'filosofia') { %>Compartilhe suas reflexões filosóficas...<% } else if (type === 'religiao') { %>Compartilhe sua experiência espiritual...<% } else { %>Compartilhe suas reflexões...<% } %>"></textarea>
+                </div>
+                <button type="submit" class="comment-form-submit">
+                    <span class="comment-submit-icon">📝</span>
+                    <span class="comment-submit-text">Publicar Comentário</span>
+                </button>
+            </form>
+        </div>
+
+        <!-- Lista de Comentários -->
+        <div class="comments-list-container">
+            <div class="comments-count" id="commentsCount">
+                <span class="count-number">0</span> comentários
+            </div>
+            <div class="comments-list" id="commentsList">
+                <!-- Comentários serão carregados aqui via JavaScript -->
+            </div>
+            <div class="comments-loading" id="commentsLoading" style="display: none;">
+                <div class="loading-spinner"></div>
+                <span>Carregando comentários...</span>
+            </div>
+            <div class="comments-empty" id="commentsEmpty" style="display: none;">
+                <div class="empty-icon">💭</div>
+                <p>
+                    <% if (type === 'filosofia') { %>
+                        Seja o primeiro a filosofar sobre este artigo!
+                    <% } else if (type === 'religiao') { %>
+                        Seja o primeiro a compartilhar sua fé sobre este artigo!
+                    <% } else { %>
+                        Seja o primeiro a comentar sobre este artigo!
+                    <% } %>
+                </p>
+            </div>
+        </div>
+    </section>
+</div>

@@ -1,0 +1,40 @@
+<div class="container">
+    <div class="section-header">
+        <h2 class="section-title">Poemas</h2>
+        <p class="section-description">Versos que tocam a alma e despertam os sentimentos mais profundos</p>
+    </div>
+
+    <div class="filter-tabs">
+        <% categories.forEach(category => { %>
+            <button class="filter-btn <%= category === 'todos' ? 'active' : '' %>" data-filter="<%= category %>">
+                <%= category.charAt(0).toUpperCase() + category.slice(1) %>
+            </button>
+        <% }); %>
+    </div>
+
+    <div class="poems-grid">
+        <% poemas.forEach(poema => { %>
+            <article class="poem-card" data-category="<%= poema.category %>">
+                <h3 class="poem-title"><%= poema.title %></h3>
+                <div class="poem-content">
+                    <% poema.content.slice(0, 8).forEach(line => { %>
+                        <% if (line === '') { %>
+                            <br>
+                        <% } else { %>
+                            <%= line %><br>
+                        <% } %>
+                    <% }); %>
+                    <% if (poema.content.length > 8) { %>
+                        <p class="read-more-link">
+                            <a href="/poemas/<%= poema.id %>">...continuar lendo</a>
+                        </p>
+                    <% } %>
+                </div>
+                <div class="poem-meta">
+                    <span class="poem-date"><%= poema.date %></span>
+                    <span class="poem-tags"><%= poema.tags.join(', ') %></span>
+                </div>
+            </article>
+        <% }); %>
+    </div>
+</div>

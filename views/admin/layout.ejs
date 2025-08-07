@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/admin-premium.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Oswald:wght@400;600;700&family=Roboto+Slab:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+</head>
+<body class="admin-body">
+    <div class="admin-wrapper">
+        <!-- Sidebar -->
+        <nav class="admin-sidebar">
+            <div class="admin-logo">
+                <img src="/images/image.png" alt="Z3Z Logo" class="admin-logo-img">
+                <h2 class="admin-logo-text z3z-text">Z<span class="z3z-number">3</span>Z Admin</h2>
+            </div>
+            
+            <ul class="admin-menu">
+                <li class="admin-menu-item">
+                    <a href="/admin/dashboard" class="admin-menu-link">
+                        <i data-lucide="layout-dashboard" class="admin-menu-icon"></i>
+                        Dashboard
+                    </a>
+                </li>
+                <li class="admin-menu-item">
+                    <a href="/admin/poemas" class="admin-menu-link">
+                        <i data-lucide="feather" class="admin-menu-icon"></i>
+                        Poemas
+                    </a>
+                </li>
+                <li class="admin-menu-item">
+                    <a href="/admin/filosofia" class="admin-menu-link">
+                        <i data-lucide="brain" class="admin-menu-icon"></i>
+                        Filosofia
+                    </a>
+                </li>
+                <li class="admin-menu-item">
+                    <a href="/admin/religiao" class="admin-menu-link">
+                        <i data-lucide="cross" class="admin-menu-icon"></i>
+                        Religião
+                    </a>
+                </li>
+            </ul>
+            
+            <div class="admin-user-info">
+                <div class="admin-user-name">Administrador Z3Z</div>
+                <div class="admin-user-email">admin@z3zblog.com</div>
+                <a href="/admin/logout" class="admin-logout-btn">Sair</a>
+            </div>
+        </nav>
+
+        <!-- Conteúdo principal -->
+        <main class="admin-main">
+            <header class="admin-header">
+                <h1 class="admin-page-title">
+                    <%= title.split(' - ')[0] %>
+                </h1>
+                <div class="admin-header-actions">
+                    <a href="/" target="_blank" class="admin-view-site-btn">Ver Site</a>
+                </div>
+            </header>
+
+            <div class="admin-content">
+                <%- body %>
+            </div>
+        </main>
+    </div>
+
+    <script src="/js/admin.js"></script>
+    <script>
+        // Inicializar ícones Lucide
+        lucide.createIcons();
+    </script>
+</body>
+</html>

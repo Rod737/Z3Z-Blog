@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Z3Z Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Oswald:wght@400;600;700&family=Roboto+Slab:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-red: #B71C1C;
+            --primary-gold: #FFB300;
+            --navy-blue: #1A237E;
+            --dark-navy: #0D1421;
+            --white: #FFFFFF;
+            --light-gray: #F8F9FA;
+            --medium-gray: #6C757D;
+            --dark-gray: #343A40;
+            
+            --gradient-primary: linear-gradient(135deg, #1A237E 0%, #3F51B5 50%, #5C6BC0 100%);
+            --gradient-secondary: linear-gradient(135deg, #B71C1C 0%, #D32F2F 50%, #F44336 100%);
+            --gradient-accent: linear-gradient(135deg, #FFB300 0%, #FFC107 50%, #FFD54F 100%);
+            --gradient-dark: linear-gradient(135deg, #0D1421 0%, #1A237E 100%);
+            
+            --shadow-xl: 0 20px 60px rgba(13, 20, 33, 0.3);
+            --shadow-glow: 0 0 40px rgba(255, 179, 0, 0.4);
+            
+            --font-primary: 'Oswald', sans-serif;
+            --font-secondary: 'Roboto Slab', serif;
+            --font-body: 'Libre Baskerville', serif;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--gradient-dark);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Background animado */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 25% 25%, rgba(255, 179, 0, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(183, 28, 28, 0.10) 0%, transparent 50%),
+                linear-gradient(135deg, rgba(26, 35, 126, 0.9) 0%, rgba(183, 28, 28, 0.6) 100%);
+            animation: backgroundShift 15s ease-in-out infinite alternate;
+        }
+
+        @keyframes backgroundShift {
+            0% {
+                background: 
+                    radial-gradient(circle at 25% 25%, rgba(255, 179, 0, 0.15) 0%, transparent 50%),
+                    radial-gradient(circle at 75% 75%, rgba(183, 28, 28, 0.10) 0%, transparent 50%),
+                    linear-gradient(135deg, rgba(26, 35, 126, 0.9) 0%, rgba(183, 28, 28, 0.6) 100%);
+            }
+            100% {
+                background: 
+                    radial-gradient(circle at 75% 25%, rgba(255, 179, 0, 0.20) 0%, transparent 50%),
+                    radial-gradient(circle at 25% 75%, rgba(183, 28, 28, 0.15) 0%, transparent 50%),
+                    linear-gradient(135deg, rgba(183, 28, 28, 0.7) 0%, rgba(26, 35, 126, 0.8) 100%);
+            }
+        }
+
+        /* Container principal */
+        .login-container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 480px;
+            padding: 20px;
+        }
+
+        /* Card de login premium */
+        .login-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: var(--shadow-xl);
+            padding: 60px 50px;
+            position: relative;
+            overflow: hidden;
+            animation: cardFloat 6s ease-in-out infinite alternate;
+        }
+
+        @keyframes cardFloat {
+            0% {
+                transform: translateY(0px);
+            }
+            100% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .login-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-accent);
+            border-radius: 24px 24px 0 0;
+        }
+
+        /* Logo e título */
+        .login-header {
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .login-logo {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin: 0 auto 30px;
+            box-shadow: var(--shadow-glow);
+            transition: transform 0.3s ease;
+            animation: logoGlow 4s ease-in-out infinite alternate;
+        }
+
+        @keyframes logoGlow {
+            0% {
+                box-shadow: 0 0 30px rgba(255, 179, 0, 0.3);
+            }
+            100% {
+                box-shadow: 0 0 50px rgba(255, 179, 0, 0.6);
+            }
+        }
+
+        .login-logo:hover {
+            transform: scale(1.05) rotate(5deg);
+        }
+
+        .login-title {
+            font-family: var(--font-primary);
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--white);
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .login-title .z3z-number {
+            color: var(--primary-gold);
+            text-shadow: 0 0 20px rgba(255, 179, 0, 0.6);
+            display: inline-block;
+            animation: numberPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes numberPulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        .login-subtitle {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.1rem;
+            font-weight: 300;
+            margin-bottom: 10px;
+        }
+
+        .login-description {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+            font-style: italic;
+        }
+
+        /* Formulário premium */
+        .login-form {
+            space-y: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 12px;
+            font-weight: 600;
+            color: var(--white);
+            font-family: var(--font-secondary);
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 18px 24px;
+            padding-left: 60px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            border-radius: 16px;
+            color: var(--white);
+            font-size: 1.1rem;
+            font-family: var(--font-body);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-gold);
+            background: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 0 0 4px rgba(255, 179, 0, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .form-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Botão premium */
+        .login-button {
+            width: 100%;
+            padding: 18px 32px;
+            background: var(--gradient-accent);
+            color: var(--dark-navy);
+            border: none;
+            border-radius: 16px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            font-family: var(--font-secondary);
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 8px 25px rgba(255, 179, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 30px;
+        }
+
+        .login-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .login-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(255, 179, 0, 0.4);
+            background: var(--white);
+            color: var(--navy-blue);
+        }
+
+        .login-button:hover::before {
+            left: 100%;
+        }
+
+        .login-button:active {
+            transform: translateY(-1px);
+        }
+
+        /* Alert de erro premium */
+        .error-alert {
+            background: rgba(244, 67, 54, 0.15);
+            border: 1px solid rgba(244, 67, 54, 0.3);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 30px;
+            color: #FFCDD2;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: errorShake 0.5s ease-in-out;
+        }
+
+        @keyframes errorShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* Footer */
+        .login-footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .back-link {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-link:hover {
+            color: var(--primary-gold);
+            transform: translateX(-3px);
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .login-card {
+                padding: 40px 30px;
+            }
+            
+            .login-title {
+                font-size: 2rem;
+            }
+            
+            .form-input {
+                padding-left: 50px;
+            }
+        }
+
+        /* Elementos decorativos */
+        .decorative-element {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            opacity: 0.1;
+            animation: rotate 20s linear infinite;
+        }
+
+        .decorative-element:nth-child(1) {
+            background: var(--gradient-accent);
+            top: -100px;
+            right: -100px;
+        }
+
+        .decorative-element:nth-child(2) {
+            background: var(--gradient-secondary);
+            bottom: -100px;
+            left: -100px;
+            animation-direction: reverse;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="decorative-element"></div>
+    <div class="decorative-element"></div>
+    
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <img src="/images/image.png" alt="Z3Z Logo" class="login-logo">
+                <h1 class="login-title">Z<span class="z3z-number">3</span>Z Admin</h1>
+                <p class="login-subtitle">Sistema de Gestão</p>
+                <p class="login-description">Acesso administrativo ao blog</p>
+            </div>
+
+            <% if (error) { %>
+                <div class="error-alert">
+                    <i data-lucide="alert-circle" style="width: 18px; height: 18px; color: #f44336;"></i>
+                    <%= error %>
+                </div>
+            <% } %>
+
+            <form method="POST" action="/admin/login" class="login-form">
+                <div class="form-group">
+                    <label for="username" class="form-label">
+                        <i data-lucide="user" style="width: 16px; height: 16px; margin-right: 8px;"></i>
+                        Usuário
+                    </label>
+                    <div style="position: relative;">
+                        <i data-lucide="user" class="form-icon" style="width: 20px; height: 20px;"></i>
+                        <input type="text" id="username" name="username" class="form-input" 
+                               placeholder="Digite seu usuário" required autofocus>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">
+                        <i data-lucide="lock" style="width: 16px; height: 16px; margin-right: 8px;"></i>
+                        Senha
+                    </label>
+                    <div style="position: relative;">
+                        <i data-lucide="lock" class="form-icon" style="width: 20px; height: 20px;"></i>
+                        <input type="password" id="password" name="password" class="form-input" 
+                               placeholder="Digite sua senha" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="login-button">
+                    <i data-lucide="log-in" style="width: 20px; height: 20px; margin-right: 10px;"></i>
+                    Entrar no Sistema
+                </button>
+            </form>
+
+            <div class="login-footer">
+                <a href="/" class="back-link">
+                    <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i>
+                    Voltar ao Site
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Inicializar ícones Lucide
+        lucide.createIcons();
+
+        // Efeito de digitação no título
+        document.addEventListener('DOMContentLoaded', function() {
+            const numberElement = document.querySelector('.z3z-number');
+            if (numberElement) {
+                setInterval(() => {
+                    numberElement.style.transform = 'scale(1.2)';
+                    setTimeout(() => {
+                        numberElement.style.transform = 'scale(1)';
+                    }, 200);
+                }, 3000);
+            }
+
+            // Focus automático no campo de usuário
+            const usernameInput = document.getElementById('username');
+            if (usernameInput) {
+                setTimeout(() => {
+                    usernameInput.focus();
+                }, 500);
+            }
+
+            // Efeito de shake no erro
+            const errorAlert = document.querySelector('.error-alert');
+            if (errorAlert) {
+                setTimeout(() => {
+                    errorAlert.style.animation = 'none';
+                }, 1000);
+            }
+        });
+
+        // Efeito de parallax leve
+        document.addEventListener('mousemove', function(e) {
+            const card = document.querySelector('.login-card');
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            
+            card.style.transform = `
+                translateY(-${(y - 0.5) * 10}px) 
+                translateX(-${(x - 0.5) * 10}px)
+                rotateY(${(x - 0.5) * 5}deg)
+                rotateX(${(y - 0.5) * 5}deg)
+            `;
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<div style="margin-bottom: 20px;">
+    <a href="/admin/filosofia" style="color: var(--primary-red); text-decoration: none;">
+        ← Voltar para lista de filosofia
+    </a>
+</div>
+
+<form method="POST" class="admin-form">
+    <div class="admin-form-group">
+        <label for="title" class="admin-form-label">Título do Artigo</label>
+        <input type="text" id="title" name="title" class="admin-form-input" 
+               value="<%= artigo ? artigo.title : '' %>" required>
+    </div>
+
+    <div class="admin-form-group">
+        <label for="content" class="admin-form-label">Conteúdo</label>
+        <textarea id="content" name="content" class="admin-form-textarea" 
+                  placeholder="Digite seu artigo filosófico aqui... Um parágrafo por linha." required><%= artigo ? artigo.content.join('\n\n') : '' %></textarea>
+        <small style="color: var(--medium-gray); margin-top: 5px; display: block;">
+            Cada linha será um parágrafo do artigo. Deixe linhas em branco entre parágrafos para melhor formatação.
+        </small>
+    </div>
+
+    <div class="admin-form-group">
+        <label for="tags" class="admin-form-label">Tags</label>
+        <input type="text" id="tags" name="tags" class="admin-form-input" 
+               value="<%= artigo ? artigo.tags.join(', ') : '' %>"
+               placeholder="Ex: Existencialismo, Consciência, Ética, Metafísica">
+        <small style="color: var(--medium-gray); margin-top: 5px; display: block;">
+            Separe as tags por vírgula (temas, filósofos, correntes filosóficas)
+        </small>
+    </div>
+
+    <div class="admin-form-group">
+        <label style="display: flex; align-items: center; cursor: pointer;">
+            <input type="checkbox" name="published" class="admin-form-checkbox"
+                   <%= artigo && artigo.published ? 'checked' : '' %>>
+            <span class="admin-form-label" style="margin: 0; margin-left: 8px;">Publicar imediatamente</span>
+        </label>
+        <small style="color: var(--medium-gray); margin-top: 5px; display: block;">
+            Se desmarcado, o artigo será salvo como rascunho
+        </small>
+    </div>
+
+    <div style="margin-top: 30px; display: flex; gap: 15px;">
+        <button type="submit" class="admin-btn admin-btn-primary">
+            <% if (action === 'criar') { %>
+                <i data-lucide="brain" style="width: 16px; height: 16px; margin-right: 8px;"></i>
+                Criar Artigo Filosófico
+            <% } else { %>
+                <i data-lucide="save" style="width: 16px; height: 16px; margin-right: 8px;"></i>
+                Salvar Alterações
+            <% } %>
+        </button>
+        
+        <a href="/admin/filosofia" class="admin-btn admin-btn-secondary">
+            <i data-lucide="arrow-left" style="width: 16px; height: 16px; margin-right: 8px;"></i>
+            Cancelar
+        </a>
+    </div>
+</form>
+
+<div style="margin-top: 40px; padding: 20px; background: rgba(26, 35, 126, 0.05); border-radius: 12px;">
+    <h4 style="color: var(--navy-blue); margin-bottom: 15px;">
+        <i data-lucide="lightbulb" style="width: 18px; height: 18px; margin-right: 8px; color: var(--admin-accent);"></i>
+        Dicas para Artigos Filosóficos
+    </h4>
+    <ul style="color: var(--medium-gray); line-height: 1.6;">
+        <li>Desenvolva uma tese clara e argumentos bem estruturados</li>
+        <li>Use referências a filósofos e correntes de pensamento</li>
+        <li>Incentive a reflexão crítica dos leitores</li>
+        <li>Conecte conceitos abstratos com experiências cotidianas</li>
+        <li>Mantenha um tom acessível mas respeitoso à complexidade do tema</li>
+    </ul>
+</div>
+
+<script>
+// Auto-resize do textarea
+const textarea = document.getElementById('content');
+textarea.addEventListener('input', function() {
+    this.style.height = 'auto';
+    this.style.height = Math.max(200, this.scrollHeight) + 'px';
+});
+
+// Ajuste inicial da altura
+window.addEventListener('load', function() {
+    textarea.style.height = 'auto';
+    textarea.style.height = Math.max(200, textarea.scrollHeight) + 'px';
+    
+    // Inicializar ícones Lucide
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
+});
+</script>
